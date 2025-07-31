@@ -1,0 +1,17 @@
+:root {
+  --cor-primaria: #c792ea;
+  --cor-primaria-hover: #d4a7f5;
+  --cor-secundaria: #8b5fbf;
+  --cor-terciaria: #6a4c93;
+  --cor-texto: #e0e0e0;
+  --cor-texto-branco: #ffffff;
+  --cor-texto-footer: #888;
+  --fundo-body: linear-gradient(135deg, #0a0a0a, #1a0a1a, #121212);
+  --fundo-navbar: linear-gradient(135deg, rgba(18, 18, 18, 0.85), rgba(26, 26, 26, 0.8), rgba(30, 20, 35, 0.85));
+  --fundo-navbar-scrolled: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(26, 26, 26, 0.92), rgba(30, 20, 35, 0.95));
+  --fonte-principal: 'Poppins', sans-serif;
+  --fonte-display: 'Orbitron', monospace;
+  --fonte-destaque: 'Chakra Petch', sans-serif;
+  --transicao-normal: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transicao-rapida: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

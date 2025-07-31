@@ -4,148 +4,215 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>S&M PsyBookings - Conectando Artistas e Pistas</title>
-    <link rel="stylesheet" href="style.css" />
+
+    <link rel="shortcut icon" href="assets/imagem-4.png" type="image/png" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
   </head>
   <body>
-    <nav class="navbar">
-      <div class="navbar-container">
+    <div class="fundo-particulas"></div>
+
+    <nav class="barra-navegacao">
+      <div class="barra-navegacao-container">
         <img
           src="assets/logo.png"
-          alt="S&M PsyBookings Logo"
-          class="navbar-logo"
+          alt="Logotipo da S&M PsyBookings"
+          class="barra-navegacao-logo"
         />
 
-        <ul class="menu-links">
+        <ul class="barra-navegacao-menu">
           <li><a href="#abertura">Home</a></li>
           <li><a href="#artistas">Artistas</a></li>
           <li><a href="#sobre">A Agência</a></li>
           <li><a href="#contato">Contato</a></li>
         </ul>
+
+        <div class="menu-hamburguer">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
     </nav>
 
-    <header id="abertura">
-      <video class="abertura-video" autoplay muted loop>
+    <header id="abertura" class="secao secao-abertura">
+      <video class="secao-abertura-video" autoplay muted loop playsinline>
         <source src="assets/apresentacao-loop.mp4" type="video/mp4" />
         Seu navegador não suporta vídeos.
       </video>
-      <div class="abertura-content">
-        <h1 class="hero-title">Retrofuturismo, identidade e imersão sonora.</h1>
-        <a href="#contato" class="cta-button">Faça uma Proposta</a>
-      </div>
+      <div class="secao-abertura-conteudo">
+        <img
+          src="assets/imagem-4.png"
+          alt="Símbolo da S&M PsyBookings"
+          class="secao-abertura-logo-simbolo"
+        />
+
+        <img
+          src="assets/logo.png"
+          alt="Logotipo da S&M PsyBookings"
+          class="secao-abertura-logotipo"
+        />
+
+        <h1 class="titulo-principal">
+          Retrofuturismo, identidade e imersão sonora.
+        </h1>
+        <div class="subtitulo-principal">
+          <p>
+            Uma plataforma de bookings que conecta artistas visionários com
+            experiências imersivas
+          </p>
+        </div>
+
     </header>
 
     <main>
-      <section id="sobre">
-        <div class="container">
-          <div class="manifesto-texto">
+      <section id="sobre" class="secao secao-sobre">
+        <div class="conteudo-central">
+          <div class="secao-sobre-manifesto">
             <h2>Não somos apenas uma agência.</h2>
             <p>
-              Somos um sistema inteligente de curadoria e visibilidade, criado
-              para artistas que representam a nova geração da música eletrônica.
+              Somos um
+              <strong>sistema inteligente de curadoria e visibilidade</strong>,
+              criado para artistas que representam a nova geração da música
+              eletrônica.
             </p>
+            <div class="manifesto-destaque">
+              <p class="manifesto-citacao">
+                "Representamos sons que se transformam em atmosferas, sets que
+                te guiam internamente, e nomes que moldam o futuro da cena
+                underground."
+              </p>
+              <p class="manifesto-identidade">
+                Somos
+                <span class="texto-retro-iluminado">ciber-agentes</span> de uma
+                nova era da música.
+              </p>
+            </div>
           </div>
-          <div class="manifesto-imagem">
-            <img
-              src="assets/imagem-4.png"
-              alt="Símbolo do CD S&M PsyBookings"
-            />
+          <div class="secao-sobre-imagem-arte">
+            <img src="assets/imagem-3.png" alt="Arte da S&M PsyBookings" />
           </div>
         </div>
       </section>
 
-      <section id="artistas">
-        <div class="container">
+      <section id="artistas" class="secao secao-artistas">
+        <div class="conteudo-central">
           <h2>Nomes que moldam o futuro.</h2>
-          <div class="artistas-grid">
-            <div class="artista-card">
-              <div class="artista-imagem">
+          <div class="grade-artistas">
+            <div class="cartao-artista">
+              <div class="cartao-artista-imagem">
                 <img
                   src="assets/macrocosmic.jpeg"
-                  alt="Foto do Artista Macrocosmic"
+                  alt="Foto do artista Macrocosmic"
                 />
               </div>
-              <div class="artista-info">
+              <div class="cartao-artista-info">
                 <h3>Macrocosmic</h3>
                 <p>
-                  Nicolas Oliveira é o talento por trás do projeto
-                  Macrocosmic...
+                  Nicolas Oliveira é o talento por trás do projeto Macrocosmic,
+                  que traz ao psytrance uma experiência única e eufórica. Unindo
+                  tecnologia e misticismo, o projeto cria uma jornada sonora que
+                  conecta esses elementos como se compartilhassem uma mesma
+                  origem na existência cósmica.
                 </p>
-                <div class="artista-links">
-                  <a href="#" class="artista-link"
+                <div class="cartao-artista-links">
+                  <a
+                    href="https://open.spotify.com/intl-pt/artist/65DTWlptFve5yVJi1JegAU?si=fcfJhkt3RBy6TBYaEIHNVA"
+                    class="link-social"
                     ><i class="fab fa-spotify"></i> Spotify</a
                   >
-                  <a href="#" class="artista-link"
+                  <a
+                    href="https://www.instagram.com/macrocosmicc/"
+                    class="link-social"
                     ><i class="fab fa-instagram"></i> Instagram</a
                   >
-                  <a href="#" class="artista-link"
+                  <a
+                    href="https://soundcloud.com/macrocosmicc/macrocosmic-bug-open-air-live-set"
+                    class="link-social"
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
               </div>
             </div>
-
-            <div class="artista-card">
-              <div class="artista-imagem">
-                <img src="assets/davinci.jpg" alt="Foto do Artista Davinci" />
+            <div class="cartao-artista">
+              <div class="cartao-artista-imagem">
+                <img src="assets/davinci.JPG" alt="Foto do artista Davinci" />
               </div>
-              <div class="artista-info">
+              <div class="cartao-artista-info">
                 <h3>Davinci</h3>
                 <p>
                   Projeto Davinci, idealizado por Davi Pereira, possui a missão
-                  de criar apresentações hipnotizantes...
+                  de criar apresentações hipnotizantes e psicodélicas. Focado no
+                  gênero progressive psytrance, Davinci proporciona uma
+                  experiência sonora única, promovendo a imersão do público na energia
+                  pulsante do offbeat.
                 </p>
-                <div class="artista-links">
-                  <a href="#" class="artista-link"
+                <div class="cartao-artista-links">
+                  <a
+                    href="https://www.instagram.com/davincidjj/"
+                    class="link-social"
                     ><i class="fab fa-instagram"></i> Instagram</a
                   >
-                  <a href="#" class="artista-link"
+                  <a
+                    href="https://soundcloud.com/davinccidj/codigo-davinci-sunshine-open-air-2025"
+                    class="link-social"
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
               </div>
             </div>
-
-            <div class="artista-card">
-              <div class="artista-imagem">
+            <div class="cartao-artista">
+              <div class="cartao-artista-imagem">
                 <img
                   src="assets/soul-driver.jpeg"
-                  alt="Foto do Artista Soul-Driver"
+                  alt="Foto do artista Soul Driver"
                 />
               </div>
-              <div class="artista-info">
-                <h3>Soul-Driver</h3>
+              <div class="cartao-artista-info">
+                <h3>Soul Drive</h3>
                 <p>
-                  Soul-Driver é DJ, guitarrista e produtor brasileiro. Música é
-                  uma forma de expressão da alma...
+                  Soul Driver é DJ, guitarrista e produtor brasileiro. Música
+                  é uma forma de expressão da alma, e o nome "Soul Driver" pode
+                  representar a força motriz da emoção e sentimento na música.
+                  Cada nota, acorde, ritmo e letra podem ser uma maneira de
+                  guiar a alma de cada ouvinte por várias sensações.
                 </p>
-                <div class="artista-links">
-                  <a href="#" class="artista-link"
+                <div class="cartao-artista-links">
+                  <a
+                    href="https://www.instagram.com/souldrivemusic/"
+                    class="link-social"
                     ><i class="fab fa-instagram"></i> Instagram</a
                   >
-                  <a href="#" class="artista-link"
+                  <a
+                    href="https://open.spotify.com/intl-pt/artist/4I81eheUU8d4FqKRm40pbb?si=3dre34nvQJiI0ANnF8rTTg"
+                    class="link-social"
                     ><i class="fab fa-spotify"></i> Spotify</a
                   >
                 </div>
               </div>
             </div>
-
-            <div class="artista-card">
-              <div class="artista-imagem">
-                <img src="assets/hosh.jpeg" alt="Foto do Artista Hosh" />
+            <div class="cartao-artista">
+              <div class="cartao-artista-imagem">
+                <img src="assets/hosh.jpeg" alt="Foto do artista Hosh" />
               </div>
-              <div class="artista-info">
+              <div class="cartao-artista-info">
                 <h3>Hosh</h3>
                 <p>
                   Hosh é um projeto de Progressive Psytrance criado por John
-                  Lucas...
+                  Lucas, artista, DJ & Produtor de João Pessoa. Com um som
+                  autêntico e envolvente, Hosh busca conectar mente e música em
+                  uma experiência única e transformadora, tornando cada apresentação
+                  uma jornada sonora intensa e marcante.
                 </p>
-                <div class="artista-links">
-                  <a href="#" class="artista-link"
+                <div class="cartao-artista-links">
+                  <a
+                    href="https://www.instagram.com/hosh.live/"
+                    class="link-social"
                     ><i class="fab fa-instagram"></i> Instagram</a
                   >
                 </div>
@@ -155,14 +222,14 @@
         </div>
       </section>
 
-      <section id="contato">
-        <div class="container">
+      <section id="contato" class="secao secao-contato">
+        <div class="conteudo-central">
           <h2>Vamos criar conexões.</h2>
           <p>Entre em contato para propostas, bookings e colaborações.</p>
           <a
-            href="https://linktr.ee/SMPSYBOOKINGS?fbclid=PAZXh0bgNhZW0CMTEAAafFTqqCG5LeSzljXBuPMYxqT1YXjq0rov2_wAHmnXNmM7T0RZvGLHX7QO3PTw_aem_lpcKkddG38TtHL572OtwMA"
+            href="https://linktr.ee/SMPSYBOOKINGS"
             target="_blank"
-            class="cta-button"
+            class="botao-chamada"
             >Fale Conosco</a
           >
         </div>
@@ -170,16 +237,18 @@
     </main>
 
     <footer>
-      <div class="social-links">
+      <div class="rodape-links-sociais">
         <a
           href="https://www.instagram.com/smpsybookings/"
           target="_blank"
-          title="Instagram S&M PsyBookings"
+          title="Instagram da S&M PsyBookings"
         >
           <i class="fab fa-instagram"></i>
         </a>
       </div>
-      <p>&copy; 2025 S&M PsyBookings. Todos os direitos reservados.</p>
+      <p>© 2025 S&M PsyBookings. Todos os direitos reservados.</p>
     </footer>
+
+    <script src="index.js"></script>
   </body>
 </html>
