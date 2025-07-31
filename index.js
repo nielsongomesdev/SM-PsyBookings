@@ -1,4 +1,3 @@
-// --- EFEITO DE SCROLL NA BARRA DE NAVEGAÇÃO ---
 window.addEventListener('scroll', () => {
     const barraNavegacao = document.querySelector('.barra-navegacao');
     if (window.scrollY > 50) {
@@ -8,7 +7,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// --- FUNCIONALIDADE DO MENU HAMBÚRGUER ---
 const menuHamburguer = document.querySelector('.menu-hamburguer');
 const menuLinks = document.querySelector('.barra-navegacao-menu');
 
@@ -17,7 +15,6 @@ menuHamburguer.addEventListener('click', () => {
     menuLinks.classList.toggle('active');
 });
 
-// Fechar menu ao clicar em um link
 document.querySelectorAll('.barra-navegacao-menu a').forEach(link => {
     link.addEventListener('click', () => {
         menuHamburguer.classList.remove('active');
@@ -25,7 +22,6 @@ document.querySelectorAll('.barra-navegacao-menu a').forEach(link => {
     });
 });
 
-// Fechar menu ao clicar fora dele
 document.addEventListener('click', (e) => {
     if (!menuHamburguer.contains(e.target) && !menuLinks.contains(e.target)) {
         menuHamburguer.classList.remove('active');
@@ -33,7 +29,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// --- EFEITO SCROLL REVEAL PARA OS CARDS ---
 const observador = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -47,7 +42,6 @@ const observador = new IntersectionObserver((entries) => {
 const cardsParaObservar = document.querySelectorAll('.cartao-artista');
 cardsParaObservar.forEach((card) => observador.observe(card));
 
-// --- SISTEMA DE PARTÍCULAS ANIMADAS ---
 function criarParticulas() {
     const containerParticulas = document.querySelector('.fundo-particulas');
     
@@ -92,3 +86,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+function abrirEmail() {
+    if (window.innerWidth > 768) {
+        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=smpsybookings@gmail.com&su=Contato%20via%20Site%20S%26M%20PsyBookings', '_blank');
+        return false;
+    }
+    return true;
+}
