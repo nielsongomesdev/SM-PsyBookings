@@ -1,4 +1,3 @@
-/* ===== IMPORTAÇÕES ===== */
 @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Poppins:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap");
 
 html {
@@ -357,9 +356,8 @@ main {
 .secao-abertura-logo-simbolo {
   max-width: 180px;
   margin-bottom: 25px;
-  filter: drop-shadow(0 10px 20px rgba(199, 146, 234, 0.4));
-  animation: logoFloat 4s ease-in-out infinite,
-    neonPulse 3s ease-in-out infinite alternate;
+  opacity: 0.2;
+  animation: logoFloat 4s ease-in-out infinite;
 }
 .secao-abertura-logotipo {
   max-width: 280px;
@@ -384,14 +382,16 @@ main {
   text-align: center;
 }
 .subtitulo-principal {
-  margin-bottom: 35px;
-  max-width: 600px;
+  margin: 0 auto 35px auto;
+  max-width: 320px;
+  text-align: center;
 }
+
 .subtitulo-principal p {
   font-family: var(--fonte-principal);
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--cor-texto);
-  margin-bottom: 15px;
+  margin: 0;
   line-height: 1.6;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
@@ -1042,10 +1042,6 @@ footer p {
 .cartao-artista:nth-child(4).visible {
   animation: slideInUp 0.6s ease-out 0.4s both;
 }
-.secao-abertura-logo-simbolo {
-  animation: logoFloat 3s ease-in-out infinite,
-    neonPulse 2s ease-in-out infinite;
-}
 
 @media (max-width: 767px) {
   .titulo-principal {
@@ -1056,6 +1052,17 @@ footer p {
     width: 100%;
     text-align: center;
   }
+  .subtitulo-principal {
+    max-width: 270px;
+    margin: 0 auto 35px auto;
+  }
+  .subtitulo-principal p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: normal;
+    text-align: center;
+    margin: 0;
+  }
   .secao-abertura-logo-simbolo {
     max-width: 150px;
   }
@@ -1065,8 +1072,24 @@ footer p {
   .secao-sobre h2,
   .secao-artistas h2,
   .secao-contato h2 {
-    font-size: 1.8rem;
-    letter-spacing: 1px;
+    font-size: 1.1rem;
+    letter-spacing: 0px;
+  }
+  .secao-sobre p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .manifesto-identidade {
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+  .manifesto-citacao {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .secao-contato p {
+    font-size: 0.8rem;
+    line-height: 1.5;
   }
   .cartao-artista-info h3 {
     font-size: 1.4rem;
@@ -1075,6 +1098,18 @@ footer p {
   }
   .cartao-artista-info p {
     font-size: 0.9rem;
+  }
+  .botao-chamada {
+    font-size: 0.8rem;
+    padding: 14px 25px;
+  }
+  .rodape-links-sociais a {
+    font-size: 1.6rem;
+    padding: 12px;
+  }
+  footer p {
+    font-size: 0.65rem;
+    line-height: 1.3;
   }
 
   .secao-abertura-conteudo {
@@ -1178,6 +1213,17 @@ footer p {
     white-space: nowrap;
     width: 100%;
     text-align: center;
+  }
+  .subtitulo-principal {
+    max-width: 500px;
+    margin: 0 auto 35px auto;
+  }
+  .subtitulo-principal p {
+    font-size: 1.1rem;
+    white-space: normal;
+    text-align: center;
+    margin: 0;
+    line-height: 1.6;
   }
   .grade-artistas {
     grid-template-columns: 1fr 1fr;
@@ -1315,6 +1361,10 @@ footer p {
     width: 100%;
     text-align: center;
   }
+  .subtitulo-principal p {
+    font-size: 0.65rem;
+    line-height: 1.3;
+  }
   .secao-abertura-logo-simbolo {
     max-width: 120px;
     margin-bottom: 20px;
@@ -1326,7 +1376,23 @@ footer p {
   .secao-sobre h2,
   .secao-artistas h2,
   .secao-contato h2 {
-    font-size: 1.6rem;
+    font-size: 1rem;
+  }
+  .secao-sobre p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .manifesto-identidade {
+    font-size: 0.8rem;
+    letter-spacing: 0px;
+  }
+  .manifesto-citacao {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .secao-contato p {
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
   .cartao-artista-info {
     padding: 20px;
@@ -1334,6 +1400,18 @@ footer p {
   .cartao-artista-info h3 {
     font-size: 1.3rem;
     text-align: center;
+  }
+  .botao-chamada {
+    font-size: 0.75rem;
+    padding: 12px 22px;
+  }
+  .rodape-links-sociais a {
+    font-size: 1.4rem;
+    padding: 10px;
+  }
+  footer p {
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
 
   .secao-abertura-conteudo {
@@ -1351,6 +1429,44 @@ footer p {
     text-align: center;
     transform: scale(0.9);
   }
+  .subtitulo-principal p {
+    font-size: 0.6rem;
+    line-height: 1.2;
+  }
+  .secao-sobre h2,
+  .secao-artistas h2,
+  .secao-contato h2 {
+    font-size: 0.9rem;
+    letter-spacing: 0px;
+  }
+  .secao-sobre p {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+  .manifesto-identidade {
+    font-size: 0.7rem;
+    letter-spacing: 0px;
+  }
+  .manifesto-citacao {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+  .secao-contato p {
+    font-size: 0.65rem;
+    line-height: 1.3;
+  }
+  .botao-chamada {
+    font-size: 0.7rem;
+    padding: 10px 20px;
+  }
+  .rodape-links-sociais a {
+    font-size: 1.2rem;
+    padding: 8px;
+  }
+  footer p {
+    font-size: 0.65rem;
+    line-height: 1.1;
+  }
 
   .secao-abertura-conteudo {
     padding: 180px 2px 60px;
@@ -1359,5 +1475,433 @@ footer p {
   .conteudo-central {
     width: 98%;
     padding: 0 1%;
+  }
+}
+
+/* Depoimentos da Equipe - Carrossel */
+.equipe-depoimentos {
+  margin-top: 60px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.equipe-depoimentos h3 {
+  font-size: 2.5rem;
+  text-align: center;
+  color: var(--cor-primaria);
+  margin-bottom: 50px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  font-family: var(--fonte-display);
+}
+
+.carrossel-depoimentos {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.carrossel-container {
+  overflow: hidden;
+  border-radius: 15px;
+  position: relative;
+  cursor: grab;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.carrossel-container:active {
+  cursor: grabbing;
+}
+
+.carrossel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.depoimento-slide {
+  min-width: 100%;
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.depoimento-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.depoimento-card {
+  background: linear-gradient(135deg, rgba(18, 18, 18, 0.8), rgba(26, 26, 26, 0.6));
+  border: 1px solid rgba(199, 146, 234, 0.2);
+  border-radius: 12px;
+  padding: 35px 30px;
+  backdrop-filter: blur(8px);
+  transition: var(--transicao-normal);
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  min-height: 280px;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.depoimento-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(199, 146, 234, 0.05), transparent, rgba(199, 146, 234, 0.05));
+  opacity: 0;
+  transition: var(--transicao-normal);
+  z-index: -1;
+}
+
+.depoimento-slide.active .depoimento-card::before {
+  opacity: 1;
+}
+
+.depoimento-texto {
+  margin-bottom: 30px;
+  flex-grow: 1;
+}
+
+.depoimento-texto p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--cor-texto);
+  margin-bottom: 18px;
+  font-style: italic;
+  font-family: var(--fonte-principal);
+}
+
+.depoimento-autor {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(199, 146, 234, 0.2);
+}
+
+.depoimento-autor strong {
+  display: block;
+  font-size: 1.3rem;
+  color: var(--cor-primaria);
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-family: var(--fonte-destaque);
+}
+
+.depoimento-autor span {
+  font-size: 0.95rem;
+  color: var(--cor-secundaria);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--fonte-principal);
+}
+
+/* Botões de Navegação */
+.carrossel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, rgba(199, 146, 234, 0.2), rgba(139, 95, 191, 0.2));
+  border: 1px solid rgba(199, 146, 234, 0.4);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-primaria);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transicao-normal);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.carrossel-btn:hover {
+  background: linear-gradient(135deg, rgba(199, 146, 234, 0.4), rgba(139, 95, 191, 0.4));
+  border-color: rgba(199, 146, 234, 0.7);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 5px 20px rgba(199, 146, 234, 0.3);
+  opacity: 1;
+}
+
+.carrossel-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carrossel-btn-prev {
+  left: -60px;
+}
+
+.carrossel-btn-next {
+  right: -60px;
+}
+
+/* Indicadores */
+.carrossel-indicadores {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 35px;
+}
+
+.indicador {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(199, 146, 234, 0.4);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.indicador::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 100%;
+  height: 100%;
+  background: var(--cor-primaria);
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.indicador.active {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 15px rgba(199, 146, 234, 0.5);
+}
+
+.indicador.active::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.indicador:hover {
+  border-color: var(--cor-primaria-hover);
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(199, 146, 234, 0.4);
+}
+
+/* Media Queries para Carrossel */
+@media (min-width: 768px) {
+  .equipe-depoimentos {
+    padding: 0 80px;
+  }
+  
+  .carrossel-depoimentos {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+  
+  .carrossel-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  .carrossel-btn {
+    display: flex;
+  }
+  
+  .depoimento-card {
+    padding: 40px 35px;
+    min-height: 300px;
+    max-width: 600px;
+  }
+  
+  .depoimento-texto p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  
+  .depoimento-autor strong {
+    font-size: 1.4rem;
+  }
+  
+  .depoimento-autor span {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .equipe-depoimentos {
+    margin-top: 50px;
+  }
+  
+  .equipe-depoimentos h3 {
+    font-size: 1.6rem;
+    margin-bottom: 35px;
+  }
+  
+  .carrossel-btn {
+    display: none;
+  }
+  
+  .depoimento-card {
+    padding: 25px 20px;
+    min-height: 200px;
+    margin: 0;
+  }
+  
+  .depoimento-texto p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+  }
+  
+  .depoimento-autor strong {
+    font-size: 1.1rem;
+  }
+  
+  .depoimento-autor span {
+    font-size: 0.85rem;
+  }
+  
+  .carrossel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    display: none;
+  }
+  
+  .carrossel-btn-prev {
+    left: -20px;
+  }
+  
+  .carrossel-btn-next {
+    right: -20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .equipe-depoimentos {
+    margin-top: 40px;
+    padding: 0 10px;
+  }
+  
+  .equipe-depoimentos h3 {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+  }
+  
+  .depoimento-card {
+    padding: 20px;
+    min-height: 180px;
+    margin: 0;
+  }
+  
+  .depoimento-texto p {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+  
+  .depoimento-autor strong {
+    font-size: 1rem;
+  }
+  
+  .depoimento-autor span {
+    font-size: 0.8rem;
+  }
+  
+  .carrossel-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  
+  .carrossel-btn-prev {
+    left: -17px;
+  }
+  
+  .carrossel-btn-next {
+    right: -17px;
+  }
+  
+  .indicador {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 320px) {
+  .equipe-depoimentos h3 {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+  
+  .depoimento-card {
+    padding: 18px;
+    min-height: 160px;
+  }
+  
+  .depoimento-texto p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  .depoimento-autor strong {
+    font-size: 0.95rem;
+  }
+  
+  .depoimento-autor span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .equipe-depoimentos {
+    padding: 0 100px;
+  }
+  
+  .carrossel-btn-prev {
+    left: -70px;
+  }
+
+  .carrossel-btn-next {
+    right: -70px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .equipe-depoimentos {
+    padding: 0 120px;
+  }
+  
+  .carrossel-btn-prev {
+    left: -80px;
+  }
+
+  .carrossel-btn-next {
+    right: -80px;
   }
 }
