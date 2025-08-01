@@ -1,6 +1,6 @@
 # 💿 S&M PsyBookings
 
-**Conectando Artistas e Pistas** - Plataforma de bookings para artistas visionários da música eletrônica.
+**Conectando Artistas e Pistas** - Landing page para plataforma de bookings de artistas visionários da música eletrônica.
 
 ## Sobre
 
