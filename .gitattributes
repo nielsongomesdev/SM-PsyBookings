@@ -1,0 +1,15 @@
+# Gitattributes for SM-PsyBookings
+# Define linguagens para o GitHub reconhecer corretamente
+
+*.html linguist-language=HTML
+*.css linguist-language=CSS
+*.js linguist-language=JavaScript
+*.md linguist-documentation
+
+# Ignorar assets do cálculo de linguagens
+assets/* linguist-vendored
+
+# Definir arquivos principais
+index.html linguist-language=HTML
+css/*.css linguist-language=CSS
+index.js linguist-language=JavaScript
