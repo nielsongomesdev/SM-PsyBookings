@@ -18,7 +18,7 @@ document.querySelectorAll('.barra-navegacao-menu a').forEach(link => {
     });
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', e => {
     if (!menuHamburguer?.contains(e.target) && !menuLinks?.contains(e.target)) {
         menuHamburguer?.classList.remove('active');
         menuLinks?.classList.remove('active');
@@ -34,7 +34,7 @@ document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(
 
 function criarParticulas() {
     const container = document.querySelector('.fundo-particulas');
-    if (!container) return console.warn('Container de partículas não encontrado');
+    if (!container) return;
     container.innerHTML = '';
     Array.from({ length: 50 }).forEach(() => {
         const particula = document.createElement('div');
