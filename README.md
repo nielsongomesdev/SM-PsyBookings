@@ -75,6 +75,27 @@ cd SM-PsyBookings
 
 **Website desenvolvido por:** [Nielson Gomes](https://github.com/nielsongomesdev)
 
+## 📄 Licença
+
+**© 2025 S&M PsyBookings - Todos os direitos reservados**
+
+Este projeto é proprietário e confidencial. O código, design, assets e conceitos são protegidos por direitos autorais.
+
+**✅ Permitido:**
+- 👀 Visualizar e estudar o código
+- 📂 Fazer clone para análise educacional
+- 🎓 Usar como referência de aprendizado
+- 💼 Incluir em portfólio (com devidos créditos)
+
+**❌ Proibido:**
+- 🚫 Uso comercial sem autorização
+- 🚫 Uso pessoal como projeto próprio
+- 🚫 Redistribuição ou revenda
+- 🚫 Modificação para outros clientes
+- 🚫 Remoção de créditos de autoria
+
+**Para licenciamento comercial:** smpsybookings@gmail.com
+
 ---
 
 **Desenvolvido com 💜 para a cena psytrance brasileira**
