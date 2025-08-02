@@ -147,7 +147,15 @@ main { margin-top: 0; margin-bottom: 0; }
 .menu-hamburguer.active span:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
 .menu-hamburguer.active span:nth-child(2) { opacity: 0; transform: scale(0) rotate(180deg); }
 .menu-hamburguer.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
-.secao-abertura { position: relative; overflow-x: hidden; margin-bottom: 0; padding-bottom: 0; }
+.secao-abertura { 
+  position: relative; overflow-x: hidden; margin-bottom: 0; padding-bottom: 0;
+  /* Fallback background para garantir que sempre tenha algo visível */
+  background: linear-gradient(rgba(18,18,18,0.8), rgba(199,146,234,0.15), rgba(18,18,18,0.85)),
+              url('../assets/imagem-1.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
 .secao-abertura-video { 
   width: 100%; height: auto; display: block; filter: brightness(0.5);
   object-fit: cover; min-height: 100vh;
