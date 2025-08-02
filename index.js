@@ -3,6 +3,24 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const video = document.querySelector('.secao-abertura-video');
+    if (video) {
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('playsinline', '');
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                document.addEventListener('touchstart', () => {
+                    video.play().catch(() => {});
+                }, { once: true });
+            });
+        }
+    }
+});
+
 const menuHamburguer = document.querySelector('.menu-hamburguer');
 const menuLinks = document.querySelector('.barra-navegacao-menu');
 
