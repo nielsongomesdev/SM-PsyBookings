@@ -687,7 +687,17 @@ footer p {
   .rodape-links-sociais a { font-size: 1.3rem; padding: 10px; margin: 0 10px; }
   footer p { font-size: 0.65rem; line-height: 1.3; }
   .secao-abertura-conteudo { padding: 140px 5px 60px; }
-  .secao-sobre-imagem-arte img { max-width: 180px; }
+  .secao-sobre-imagem-arte img { 
+    max-width: 180px;
+    /* Remove animações e transformações no mobile */
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .secao-sobre-imagem-arte img:hover {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 @media (min-width: 768px) {
   .menu-hamburguer { display: none; }
