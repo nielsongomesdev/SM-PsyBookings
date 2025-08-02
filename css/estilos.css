@@ -168,8 +168,8 @@ main { margin-top: 0; margin-bottom: 0; }
   -moz-controls: none;
   -webkit-appearance: none;
   appearance: none;
-  /* Remove interação para esconder controles */
-  pointer-events: none;
+  /* IMPORTANTE: Permite interação para que o overlay funcione */
+  pointer-events: auto !important;
   /* CSS anti-overlay */
   outline: none !important;
   border: none !important;
@@ -254,7 +254,8 @@ main { margin-top: 0; margin-bottom: 0; }
     object-fit: cover;
     height: 100vh;
     width: 100vw;
-    pointer-events: none !important;
+    /* PERMITE interação para que o overlay intercepte cliques */
+    pointer-events: auto !important;
     /* Ultra-força remoção de controles mobile */
     -webkit-media-controls: none !important;
     -webkit-media-controls-panel: none !important;
@@ -266,7 +267,7 @@ main { margin-top: 0; margin-bottom: 0; }
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
-    touch-action: none !important;
+    touch-action: manipulation !important;
     -webkit-tap-highlight-color: transparent !important;
   }
   
