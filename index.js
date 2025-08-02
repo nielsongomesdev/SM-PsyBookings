@@ -12,9 +12,39 @@ window.addEventListener('beforeunload', function() {
   window.scrollTo(0, 0);
 });
 
+// Força navbar fixo no mobile
+document.addEventListener('DOMContentLoaded', function() {
+  const navbar = document.querySelector('.barra-navegacao');
+  if (navbar) {
+    // Força propriedades CSS via JavaScript
+    navbar.style.position = 'fixed';
+    navbar.style.top = '0';
+    navbar.style.left = '0';
+    navbar.style.right = '0';
+    navbar.style.width = '100%';
+    navbar.style.zIndex = '9999';
+    
+    // Verifica se é mobile e força ainda mais
+    if (window.innerWidth <= 768) {
+      navbar.style.position = 'fixed !important';
+      navbar.style.webkitTransform = 'translateZ(0)';
+      navbar.style.transform = 'translateZ(0)';
+    }
+  }
+});
+
 window.addEventListener('scroll', () => {
     const barraNavegacao = document.querySelector('.barra-navegacao');
-    barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
+    if (barraNavegacao) {
+        barraNavegacao.classList.toggle('scrolled', window.scrollY > 50);
+        
+        // Força posição fixa durante scroll no mobile
+        if (window.innerWidth <= 768) {
+            barraNavegacao.style.position = 'fixed';
+            barraNavegacao.style.top = '0';
+            barraNavegacao.style.zIndex = '9999';
+        }
+    }
 });
 
 // SOLUÇÃO RADICAL: Auto-clique no primeiro toque para forçar autoplay
