@@ -1,4 +1,3 @@
-// Força scroll para o topo ao carregar/recarregar a página
 window.addEventListener('load', function() {
   setTimeout(() => {
     window.scrollTo(0, 0);
@@ -7,55 +6,21 @@ window.addEventListener('load', function() {
   }, 100);
 });
 
-// Força scroll para o topo antes de descarregar a página
 window.addEventListener('beforeunload', function() {
   window.scrollTo(0, 0);
-});
-
-// Força navbar fixo no mobile
-document.addEventListener('DOMContentLoaded', function() {
-  const navbar = document.querySelector('.barra-navegacao');
-  if (navbar) {
-    // Força propriedades CSS via JavaScript
-    navbar.style.position = 'fixed';
-    navbar.style.top = '0';
-    navbar.style.left = '0';
-    navbar.style.right = '0';
-    navbar.style.width = '100%';
-    navbar.style.zIndex = '9999';
-    
-    // Verifica se é mobile e força ainda mais
-    if (window.innerWidth <= 768) {
-      navbar.style.position = 'fixed !important';
-      navbar.style.webkitTransform = 'translateZ(0)';
-      navbar.style.transform = 'translateZ(0)';
-    }
-  }
 });
 
 window.addEventListener('scroll', () => {
     const barraNavegacao = document.querySelector('.barra-navegacao');
     if (barraNavegacao) {
         barraNavegacao.classList.toggle('scrolled', window.scrollY > 50);
-        
-        // Força posição fixa durante scroll no mobile
-        if (window.innerWidth <= 768) {
-            barraNavegacao.style.position = 'fixed';
-            barraNavegacao.style.top = '0';
-            barraNavegacao.style.zIndex = '9999';
-        }
     }
 });
 
-// SOLUÇÃO RADICAL: Auto-clique no primeiro toque para forçar autoplay
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
-    
     if (!video) return;
     
-    console.log('🎬 Iniciando SOLUÇÃO RADICAL para autoplay mobile...');
-    
-    // Configuração base
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
@@ -64,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     video.volume = 0;
     video.defaultMuted = true;
     
-    // Atributos obrigatórios
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
     video.setAttribute('muted', '');
@@ -75,86 +39,45 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasUserInteracted = false;
     let autoPlayAttempted = false;
     
-    // Função principal de play
     const forcePlay = async () => {
         try {
             video.muted = true;
             video.volume = 0;
             const playPromise = video.play();
             await playPromise;
-            console.log('✅ Vídeo tocando!');
             return true;
         } catch (error) {
-            console.log('❌ Erro no play:', error.message);
             return false;
         }
     };
     
-    // ESTRATÉGIA 1: Intercepta o primeiro toque e força play imediatamente
     const handleFirstInteraction = async (event) => {
         if (hasUserInteracted) return;
-        
         hasUserInteracted = true;
-        console.log('🚀 PRIMEIRA INTERAÇÃO DETECTADA - Forçando autoplay!');
-        
-        // Para o evento para não interferir
         event.preventDefault();
         event.stopPropagation();
         
-        // Força play imediatamente
         const success = await forcePlay();
-        
         if (success) {
-            console.log('✅ SUCESSO: Autoplay ativado no primeiro toque!');
-            // Remove todos os listeners após sucesso
             document.removeEventListener('touchstart', handleFirstInteraction, true);
             document.removeEventListener('click', handleFirstInteraction, true);
         }
     };
     
-    // ESTRATÉGIA 2: Auto-clique simulado
-    const simulateAutoClick = () => {
-        setTimeout(() => {
-            if (!hasUserInteracted && video.paused) {
-                console.log('🤖 Simulando clique automático...');
-                
-                // Cria e dispara evento de touch
-                const touchEvent = new TouchEvent('touchstart', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window,
-                    touches: [{
-                        clientX: window.innerWidth / 2,
-                        clientY: window.innerHeight / 2,
-                        target: video
-                    }]
-                });
-                
-                video.dispatchEvent(touchEvent);
-                forcePlay();
-            }
-        }, 1000);
-    };
-    
-    // ESTRATÉGIA 3: Captura QUALQUER interação na página
     const captureAnyInteraction = (event) => {
         if (!autoPlayAttempted) {
             autoPlayAttempted = true;
-            console.log('🎯 Interação capturada em:', event.type);
             forcePlay();
         }
     };
     
-    // Adiciona listeners para primeira interação (capture phase)
     document.addEventListener('touchstart', handleFirstInteraction, { capture: true, passive: false });
     document.addEventListener('click', handleFirstInteraction, { capture: true, passive: false });
     
-    // Adiciona listeners para qualquer interação
     ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown'].forEach(event => {
         document.addEventListener(event, captureAnyInteraction, { once: true, passive: true });
     });
     
-    // Tentativas de autoplay tradicional
     const attemptAutoplay = async () => {
         for (let i = 0; i < 5; i++) {
             setTimeout(async () => {
@@ -165,20 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    // Eventos do vídeo
     video.addEventListener('loadeddata', forcePlay);
     video.addEventListener('canplay', forcePlay);
     video.addEventListener('canplaythrough', forcePlay);
     
-    // Anti-pausa
     video.addEventListener('pause', () => {
         if (hasUserInteracted) {
-            console.log('⚠️ Vídeo pausou - reativando...');
             setTimeout(forcePlay, 100);
         }
     });
     
-    // Observer
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && video.paused) {
@@ -188,27 +107,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.5 });
     observer.observe(video);
     
-    // Eventos de página
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && video.paused && hasUserInteracted) {
             forcePlay();
         }
     });
     
-    // Inicia todas as estratégias
     attemptAutoplay();
-    simulateAutoClick();
     
-    // HACK ESPECIAL: Força play depois de um tempo se nada funcionou
     setTimeout(() => {
         if (video.paused && !hasUserInteracted) {
-            console.log('� HACK FINAL: Forçando play após 3 segundos...');
-            hasUserInteracted = true; // Simula que o usuário interagiu
+            hasUserInteracted = true;
             forcePlay();
         }
     }, 3000);
-    
-    console.log('⚡ SOLUÇÃO RADICAL configurada - aguardando primeira interação...');
 });
 
 const menuHamburguer = document.querySelector('.menu-hamburguer');
@@ -235,11 +147,9 @@ document.addEventListener('click', e => {
 
 const observador = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-        // Só aplica efeitos de scroll em desktop (768px+)
         if (window.innerWidth >= 768) {
             entry.target.classList.toggle('visible', entry.isIntersecting);
         } else {
-            // No mobile, sempre marca como visível
             entry.target.classList.add('visible');
         }
     });
@@ -250,35 +160,29 @@ function criarParticulas() {
     const container = document.querySelector('.fundo-particulas');
     if (!container) return;
     
-    // Limpa partículas existentes
     container.innerHTML = '';
     
-    // Reduz partículas no mobile para melhor performance
     const isMobile = window.innerWidth <= 768;
-    const quantidadeParticulas = isMobile ? 25 : 50;
-    
-    console.log(`Criando ${quantidadeParticulas} partículas para dispositivo ${isMobile ? 'mobile' : 'desktop'}`);
+    const quantidadeParticulas = isMobile ? 8 : 12;
     
     Array.from({ length: quantidadeParticulas }).forEach(() => {
         const particula = document.createElement('div');
         particula.className = 'particula';
         particula.style.left = `${Math.random() * 100}%`;
-        particula.style.top = `${Math.random() * 100}%`;
-        particula.style.animationDelay = `${Math.random() * 6}s`;
+        particula.style.top = `100vh`;
+        particula.style.animationDelay = `${Math.random() * 8}s`;
         
-        // Animações mais lentas no mobile
-        const duracao = isMobile ? 8 + Math.random() * 4 : 6 + Math.random() * 4;
+        const duracao = isMobile ? 10 + Math.random() * 4 : 8 + Math.random() * 4;
         particula.style.animationDuration = `${duracao}s`;
         
-        const tamanho = 1 + Math.random() * 3;
+        const tamanho = 1 + Math.random() * 2;
         particula.style.width = `${tamanho}px`;
         particula.style.height = `${tamanho}px`;
         container.appendChild(particula);
     });
     
-    // Force reflow para garantir que as partículas apareçam no mobile
     container.style.display = 'none';
-    container.offsetHeight; // trigger reflow
+    container.offsetHeight;
     container.style.display = 'block';
 }
 
@@ -372,7 +276,7 @@ class CarrosselDepoimentos {
     handleTouchStart(e) {
         this.startX = e.touches[0].clientX;
         this.startY = e.touches[0].clientY;
-        this.isInteracting = false; // Não define como true ainda
+        this.isInteracting = false;
         this.isHorizontalSwipe = false;
         this.stopAutoPlay();
     }
@@ -385,25 +289,20 @@ class CarrosselDepoimentos {
         const diffX = Math.abs(currentX - this.startX);
         const diffY = Math.abs(currentY - this.startY);
         
-        // Determina se é um swipe horizontal ou vertical
-        if (diffX > 10 || diffY > 10) { // Threshold mínimo para determinar direção
+        if (diffX > 10 || diffY > 10) {
             if (diffX > diffY) {
-                // Movimento horizontal - ativa interação do carrossel
                 this.isHorizontalSwipe = true;
                 this.isInteracting = true;
-                e.preventDefault(); // Previne scroll apenas para movimento horizontal
+                e.preventDefault();
             } else {
-                // Movimento vertical - permite scroll da página
                 this.isHorizontalSwipe = false;
                 this.isInteracting = false;
-                // NÃO previne o evento - permite scroll normal
             }
         }
     }
     
     handleTouchEnd(e) {
         if (!this.isInteracting || !this.isHorizontalSwipe) {
-            // Se não foi um swipe horizontal válido, não faz nada
             this.isInteracting = false;
             this.isHorizontalSwipe = false;
             setTimeout(() => this.startAutoPlay(), 3000);
@@ -422,7 +321,7 @@ class CarrosselDepoimentos {
         this.startX = e.clientX;
         this.startY = e.clientY;
         this.isInteracting = true;
-        this.isHorizontalSwipe = true; // Mouse sempre permite interação
+        this.isHorizontalSwipe = true;
         this.container.style.cursor = 'grabbing';
         this.stopAutoPlay();
     }
@@ -447,7 +346,6 @@ class CarrosselDepoimentos {
         const diffX = this.startX - this.endX;
         const diffY = Math.abs(this.startY - this.endY);
         
-        // Só executa o swipe se for predominantemente horizontal
         if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY) {
             diffX > 0 ? this.slideNext() : this.slidePrev();
         }
@@ -475,6 +373,8 @@ class CarrosselDepoimentos {
 
 document.addEventListener('DOMContentLoaded', () => {
     criarParticulas();
-    setInterval(criarParticulas, 12000);
+    setInterval(() => {
+        criarParticulas();
+    }, 30000);
     new CarrosselDepoimentos();
 });
