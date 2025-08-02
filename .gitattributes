@@ -1,9 +1,6 @@
-*.html linguist-detectable=true
-*.html linguist-language=HTML
-*.css linguist-detectable=true
+﻿*.js linguist-language=JavaScript
 *.css linguist-language=CSS
-*.js linguist-detectable=true
-*.js linguist-language=JavaScript
+*.html linguist-language=HTML
 *.png linguist-vendored
 *.jpg linguist-vendored
 *.jpeg linguist-vendored
