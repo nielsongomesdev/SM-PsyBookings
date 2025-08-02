@@ -3,110 +3,147 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Configuração agressiva de autoplay para todos os dispositivos
+// Configuração ultra-agressiva de autoplay
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
     
     if (!video) return;
     
-    console.log('Configurando vídeo para autoplay agressivo...');
+    console.log('🎬 Configurando vídeo para autoplay ultra-agressivo...');
     
-    // Configuração base do vídeo
+    // Remove TODOS os atributos de controle
+    video.removeAttribute('controls');
+    video.controls = false;
+    
+    // Configuração base ultra-mutada
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
     video.playsInline = true;
-    video.controls = false;
     video.volume = 0;
+    video.defaultMuted = true;
     
     // Atributos específicos para mobile
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('muted', '');
-    video.setAttribute('autoplay', '');
-    video.setAttribute('loop', '');
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('webkit-playsinline', 'true');
+    video.setAttribute('muted', 'true');
+    video.setAttribute('autoplay', 'true');
+    video.setAttribute('loop', 'true');
+    video.setAttribute('preload', 'auto');
     
-    // Função de tentativa agressiva de play
-    const forcePlay = async () => {
+    // Remove pointer events para esconder controles
+    video.style.pointerEvents = 'none';
+    
+    // Função ultra-agressiva de play
+    const ultraForcePlay = async () => {
         try {
-            // Garante que está mutado
+            // Garante configuração antes de cada tentativa
             video.muted = true;
             video.volume = 0;
+            video.defaultMuted = true;
             
-            await video.play();
-            console.log('✅ Vídeo reproduzindo automaticamente');
+            const playPromise = video.play();
+            await playPromise;
+            
+            console.log('✅ SUCESSO: Vídeo reproduzindo automaticamente!');
             return true;
         } catch (error) {
             console.log('❌ Autoplay falhou:', error.message);
-            return false;
+            
+            // Tenta método alternativo
+            try {
+                video.currentTime = 0;
+                video.muted = true;
+                await video.play();
+                console.log('✅ SUCESSO: Método alternativo funcionou!');
+                return true;
+            } catch (altError) {
+                console.log('❌ Método alternativo também falhou:', altError.message);
+                return false;
+            }
         }
     };
     
-    // Múltiplas tentativas escalonadas
-    const attemptAutoplay = async () => {
-        // Tentativa imediata
-        let success = await forcePlay();
-        if (success) return;
+    // Tentativas em cascata mais agressivas
+    const initAutoplay = () => {
+        ultraForcePlay();
         
-        // Tentativa após 100ms
-        setTimeout(async () => {
-            success = await forcePlay();
-            if (success) return;
-            
-            // Tentativa após 500ms
-            setTimeout(async () => {
-                success = await forcePlay();
-                if (success) return;
-                
-                // Tentativa após 1s
-                setTimeout(forcePlay, 1000);
-            }, 500);
-        }, 100);
+        setTimeout(() => ultraForcePlay(), 50);
+        setTimeout(() => ultraForcePlay(), 150);
+        setTimeout(() => ultraForcePlay(), 300);
+        setTimeout(() => ultraForcePlay(), 600);
+        setTimeout(() => ultraForcePlay(), 1200);
     };
     
-    // Inicia tentativas
-    attemptAutoplay();
+    // Inicia imediatamente
+    initAutoplay();
     
-    // Força play em qualquer interação do usuário
-    const playOnAnyInteraction = async () => {
-        await forcePlay();
+    // Força play na primeira interação (QUALQUER interação)
+    const instantPlay = () => {
+        ultraForcePlay();
+        console.log('🚀 Play acionado por interação do usuário');
     };
     
-    // Múltiplos event listeners para capturar interação
-    ['click', 'touchstart', 'touchend', 'keydown', 'scroll', 'mousemove'].forEach(eventType => {
-        document.addEventListener(eventType, playOnAnyInteraction, { once: true, passive: true });
+    // Captura TODOS os tipos de interação possíveis
+    const interactionEvents = [
+        'click', 'touchstart', 'touchend', 'touchmove', 
+        'keydown', 'scroll', 'mousemove', 'mousedown',
+        'focus', 'blur', 'resize'
+    ];
+    
+    interactionEvents.forEach(eventType => {
+        document.addEventListener(eventType, instantPlay, { 
+            once: true, 
+            passive: true,
+            capture: true 
+        });
     });
     
-    // Observer para quando entra na viewport
-    const observer = new IntersectionObserver((entries) => {
+    // Observer mais sensível
+    const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting && video.paused) {
-                forcePlay();
+            if (entry.isIntersecting) {
+                ultraForcePlay();
             }
         });
-    }, { threshold: 0.1 });
-    observer.observe(video);
+    }, { 
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
+        rootMargin: '50px'
+    });
+    videoObserver.observe(video);
     
-    // Força play quando a página fica visível
+    // Eventos do vídeo
+    video.addEventListener('loadstart', ultraForcePlay);
+    video.addEventListener('loadeddata', ultraForcePlay);
+    video.addEventListener('loadedmetadata', ultraForcePlay);
+    video.addEventListener('canplay', ultraForcePlay);
+    video.addEventListener('canplaythrough', ultraForcePlay);
+    
+    // Anti-pausa mais agressivo
+    video.addEventListener('pause', () => {
+        console.log('⚠️ Vídeo pausou - forçando play novamente');
+        setTimeout(ultraForcePlay, 50);
+    });
+    
+    // Eventos de página
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && video.paused) {
-            forcePlay();
+            ultraForcePlay();
         }
     });
     
-    // Tenta novamente quando a página carrega completamente
-    window.addEventListener('load', forcePlay);
+    window.addEventListener('focus', ultraForcePlay);
+    window.addEventListener('load', ultraForcePlay);
     
-    // Listener para quando o vídeo pode começar a tocar
-    video.addEventListener('canplay', forcePlay);
-    video.addEventListener('canplaythrough', forcePlay);
+    // Tentativa final depois que tudo carregou
+    setTimeout(() => {
+        if (video.paused) {
+            console.log('🔄 Tentativa final de autoplay...');
+            ultraForcePlay();
+        }
+    }, 2000);
     
-    // Previne pausa
-    video.addEventListener('pause', () => {
-        setTimeout(forcePlay, 100);
-    });
-    
-    console.log('Configuração de autoplay agressivo concluída');
+    console.log('⚡ Configuração ultra-agressiva concluída - vídeo deve tocar automaticamente!');
 });
 
 const menuHamburguer = document.querySelector('.menu-hamburguer');

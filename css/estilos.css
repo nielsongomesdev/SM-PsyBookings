@@ -157,16 +157,160 @@ main { margin-top: 0; margin-bottom: 0; }
   min-height: 100vh;
 }
 
-/* Vídeo otimizado para todos os dispositivos */
+/* Vídeo otimizado para todos os dispositivos - Remove TODOS os controles */
 .secao-abertura-video { 
   width: 100%; height: auto; display: block; filter: brightness(0.5);
   object-fit: cover; min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  /* Remove controles nativos */
   -webkit-controls: none;
   -moz-controls: none;
   -webkit-appearance: none;
   appearance: none;
-  position: relative;
-  z-index: 1;
+  /* Remove interação para esconder controles */
+  pointer-events: none;
+  /* CSS anti-overlay */
+  outline: none !important;
+  border: none !important;
+  background: none !important;
+  /* Remove hover e focus */
+  &:hover, &:focus, &:active {
+    outline: none !important;
+    border: none !important;
+  }
+}
+
+/* CSS para remover overlay de play que aparece no mobile */
+.secao-abertura-video::before,
+.secao-abertura-video::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Remove sobreposições (overlays) específicas do iOS/Safari */
+.secao-abertura-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+}
+
+.secao-abertura-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+}
+
+/* Remove TODOS os controles WebKit possíveis */
+.secao-abertura-video::-webkit-media-controls {
+  display: none !important;
+  -webkit-appearance: none;
+}
+.secao-abertura-video::-webkit-media-controls-panel {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-current-time-display {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-time-remaining-display {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-timeline {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-volume-slider {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+.secao-abertura-video::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+/* Remove controles específicos para mobile */
+@media (max-width: 768px) {
+  .secao-abertura-video {
+    object-fit: cover;
+    height: 100vh;
+    width: 100vw;
+    pointer-events: none !important;
+    /* Ultra-força remoção de controles mobile */
+    -webkit-media-controls: none !important;
+    -webkit-media-controls-panel: none !important;
+    -webkit-media-controls-play-button: none !important;
+    -webkit-media-controls-start-playback-button: none !important;
+    -webkit-media-controls-overlay-play-button: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    touch-action: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  .secao-abertura-video::-webkit-media-controls {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+  }
+  
+  .secao-abertura-video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    pointer-events: none !important;
+    -webkit-transform: scale(0) !important;
+    transform: scale(0) !important;
+  }
+  
+  .secao-abertura-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    pointer-events: none !important;
+    -webkit-transform: scale(0) !important;
+    transform: scale(0) !important;
+  }
 }
 .secao-abertura-video { 
   width: 100%; height: auto; display: block; filter: brightness(0.5);
