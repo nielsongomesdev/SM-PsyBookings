@@ -1,3 +1,5 @@
+![Animação](https://github.com/user-attachments/assets/39234b4e-fffe-48c4-9c19-37c86029fbb3)
+
 # 💿 S&M PsyBookings
 
 **Conectando Artistas e Pistas** - Landing page para plataforma de bookings de artistas visionários da música eletrônica.
