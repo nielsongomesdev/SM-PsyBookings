@@ -156,6 +156,18 @@ main { margin-top: 0; margin-bottom: 0; }
   background-position: center;
   min-height: 100vh;
 }
+
+/* Vídeo otimizado para todos os dispositivos */
+.secao-abertura-video { 
+  width: 100%; height: auto; display: block; filter: brightness(0.5);
+  object-fit: cover; min-height: 100vh;
+  -webkit-controls: none;
+  -moz-controls: none;
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  z-index: 1;
+}
 .secao-abertura-video { 
   width: 100%; height: auto; display: block; filter: brightness(0.5);
   object-fit: cover; min-height: 100vh;
@@ -166,7 +178,6 @@ main { margin-top: 0; margin-bottom: 0; }
   pointer-events: none;
 }
 
-/* Remove controles específicos do WebKit */
 .secao-abertura-video::-webkit-media-controls {
   display: none !important;
 }

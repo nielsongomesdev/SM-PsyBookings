@@ -3,67 +3,110 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Detecta se é dispositivo móvel
-function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-}
-
-// Configuração de vídeo baseada no dispositivo
+// Configuração agressiva de autoplay para todos os dispositivos
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
-    const mobileImage = document.querySelector('.secao-abertura-imagem-mobile');
     
-    console.log('Video element:', video);
-    console.log('Mobile image element:', mobileImage);
-    console.log('Is mobile device:', isMobileDevice());
+    if (!video) return;
     
-    if (isMobileDevice()) {
-        // Mobile: esconde vídeo e mostra imagem
-        console.log('Configurando para mobile...');
-        if (video) {
-            video.style.display = 'none';
-            console.log('Video escondido');
-        }
-        if (mobileImage) {
-            mobileImage.style.display = 'block';
-            mobileImage.style.position = 'absolute';
-            mobileImage.style.top = '0';
-            mobileImage.style.left = '0';
-            mobileImage.style.width = '100%';
-            mobileImage.style.height = '100vh';
-            mobileImage.style.zIndex = '1';
-            console.log('Imagem mobile configurada');
-        } else {
-            console.log('Elemento mobile image não encontrado!');
-        }
-    } else {
-        // Desktop: mostra vídeo e esconde imagem
-        console.log('Configurando para desktop...');
-        if (mobileImage) mobileImage.style.display = 'none';
-        if (video) {
-            video.style.display = 'block';
+    console.log('Configurando vídeo para autoplay agressivo...');
+    
+    // Configuração base do vídeo
+    video.muted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.controls = false;
+    video.volume = 0;
+    
+    // Atributos específicos para mobile
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
+    
+    // Função de tentativa agressiva de play
+    const forcePlay = async () => {
+        try {
+            // Garante que está mutado
             video.muted = true;
-            video.playsInline = true;
+            video.volume = 0;
             
-            // Tenta tocar o vídeo
-            const tryPlay = () => {
-                video.play().catch(() => {
-                    // Se falhar, adiciona listener para primeira interação
-                    const playOnFirstClick = () => {
-                        video.play();
-                        document.removeEventListener('click', playOnFirstClick);
-                        document.removeEventListener('touchstart', playOnFirstClick);
-                    };
-                    document.addEventListener('click', playOnFirstClick, { once: true });
-                    document.addEventListener('touchstart', playOnFirstClick, { once: true });
-                });
-            };
-            
-            // Tenta tocar imediatamente e depois de um delay
-            tryPlay();
-            setTimeout(tryPlay, 1000);
+            await video.play();
+            console.log('✅ Vídeo reproduzindo automaticamente');
+            return true;
+        } catch (error) {
+            console.log('❌ Autoplay falhou:', error.message);
+            return false;
         }
-    }
+    };
+    
+    // Múltiplas tentativas escalonadas
+    const attemptAutoplay = async () => {
+        // Tentativa imediata
+        let success = await forcePlay();
+        if (success) return;
+        
+        // Tentativa após 100ms
+        setTimeout(async () => {
+            success = await forcePlay();
+            if (success) return;
+            
+            // Tentativa após 500ms
+            setTimeout(async () => {
+                success = await forcePlay();
+                if (success) return;
+                
+                // Tentativa após 1s
+                setTimeout(forcePlay, 1000);
+            }, 500);
+        }, 100);
+    };
+    
+    // Inicia tentativas
+    attemptAutoplay();
+    
+    // Força play em qualquer interação do usuário
+    const playOnAnyInteraction = async () => {
+        await forcePlay();
+    };
+    
+    // Múltiplos event listeners para capturar interação
+    ['click', 'touchstart', 'touchend', 'keydown', 'scroll', 'mousemove'].forEach(eventType => {
+        document.addEventListener(eventType, playOnAnyInteraction, { once: true, passive: true });
+    });
+    
+    // Observer para quando entra na viewport
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && video.paused) {
+                forcePlay();
+            }
+        });
+    }, { threshold: 0.1 });
+    observer.observe(video);
+    
+    // Força play quando a página fica visível
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && video.paused) {
+            forcePlay();
+        }
+    });
+    
+    // Tenta novamente quando a página carrega completamente
+    window.addEventListener('load', forcePlay);
+    
+    // Listener para quando o vídeo pode começar a tocar
+    video.addEventListener('canplay', forcePlay);
+    video.addEventListener('canplaythrough', forcePlay);
+    
+    // Previne pausa
+    video.addEventListener('pause', () => {
+        setTimeout(forcePlay, 100);
+    });
+    
+    console.log('Configuração de autoplay agressivo concluída');
 });
 
 const menuHamburguer = document.querySelector('.menu-hamburguer');
