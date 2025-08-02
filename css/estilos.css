@@ -778,6 +778,25 @@ footer p {
   .cartao-artista { transition: none; }
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* Otimização para dispositivos com baixa performance */
+@media (max-width: 768px) {
+  .particula {
+    display: none !important;
+  }
+  .secao-artistas::before {
+    display: none !important;
+  }
+  body::before {
+    display: none !important;
+  }
+  .secao-sobre::before,
+  .secao-representante::before,
+  .secao-contato::before,
+  footer::before {
+    display: none !important;
+  }
+}
 @media (max-width: 480px) {
   .titulo-principal { font-size: 0.75rem; letter-spacing: 0px; margin-bottom: 30px; white-space: nowrap; width: 100%; text-align: center; }
   .subtitulo-principal p { font-size: 0.65rem; line-height: 1.3; }
@@ -824,7 +843,7 @@ footer p {
 }
 .carrossel-container:active { cursor: grabbing; }
 .carrossel-track {
-  display: flex; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); will-change: transform;
+  display: flex; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 .depoimento-slide {
   min-width: 100%; opacity: 0.7; transform: scale(0.98);
@@ -994,6 +1013,75 @@ footer p {
     transform: none !important;
     transition: none !important;
     filter: drop-shadow(0 10px 20px rgba(199,146,234,0.3)) !important;
+  }
+  
+  /* Otimizações críticas para scroll performance */
+  .barra-navegacao {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(18,18,18,0.95) !important;
+  }
+  .barra-navegacao.scrolled {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(18,18,18,0.98) !important;
+  }
+  
+  /* Remove partículas no mobile */
+  .fundo-particulas {
+    display: none !important;
+  }
+  
+  /* Remove animações pesadas */
+  .secao-abertura-logo-simbolo {
+    animation: none !important;
+  }
+  .titulo-principal {
+    animation: none !important;
+  }
+  .texto-retro-iluminado {
+    animation: none !important;
+  }
+  .secao-artistas::before {
+    animation: none !important;
+  }
+  
+  /* Otimiza carrossel */
+  .carrossel-track {
+    will-change: auto !important;
+    transition: transform 0.3s ease !important;
+  }
+  
+  /* Remove backdrop-filter pesados */
+  .cartao-artista {
+    backdrop-filter: none !important;
+  }
+  .link-social {
+    backdrop-filter: none !important;
+    background: rgba(199,146,234,0.15) !important;
+  }
+  .depoimento-card {
+    backdrop-filter: none !important;
+    background: rgba(18,18,18,0.9) !important;
+  }
+  .carrossel-btn {
+    backdrop-filter: none !important;
+    background: rgba(199,146,234,0.3) !important;
+  }
+  .rodape-links-sociais a {
+    backdrop-filter: none !important;
+    background: rgba(199,146,234,0.2) !important;
+  }
+  
+  /* Força aceleração de hardware leve */
+  body {
+    transform: translateZ(0);
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Remove will-change desnecessário */
+  * {
+    will-change: auto !important;
   }
 }
 
