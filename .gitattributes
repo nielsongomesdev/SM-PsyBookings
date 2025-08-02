@@ -1,4 +1,11 @@
+*.html linguist-detectable=true
+*.html linguist-language=HTML
+*.css linguist-detectable=true
+*.css linguist-language=CSS
 *.js linguist-detectable=true
-*.jsx linguist-detectable=true
-*.css linguist-vendored
-assets/* linguist-vendored
+*.js linguist-language=JavaScript
+*.png linguist-vendored
+*.jpg linguist-vendored
+*.jpeg linguist-vendored
+*.gif linguist-vendored
+*.mp4 linguist-vendored
