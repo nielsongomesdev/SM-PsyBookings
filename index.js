@@ -206,12 +206,21 @@ function criarParticulas() {
     const container = document.querySelector('.fundo-particulas');
     if (!container) return;
     container.innerHTML = '';
-    Array.from({ length: 50 }).forEach(() => {
+    
+    // Reduz partículas no mobile para melhor performance
+    const isMobile = window.innerWidth <= 768;
+    const quantidadeParticulas = isMobile ? 25 : 50;
+    
+    Array.from({ length: quantidadeParticulas }).forEach(() => {
         const particula = document.createElement('div');
         particula.className = 'particula';
         particula.style.left = `${Math.random() * 100}%`;
         particula.style.animationDelay = `${Math.random() * 6}s`;
-        particula.style.animationDuration = `${6 + Math.random() * 4}s`;
+        
+        // Animações mais lentas no mobile
+        const duracao = isMobile ? 8 + Math.random() * 4 : 6 + Math.random() * 4;
+        particula.style.animationDuration = `${duracao}s`;
+        
         const tamanho = 1 + Math.random() * 3;
         particula.style.width = `${tamanho}px`;
         particula.style.height = `${tamanho}px`;

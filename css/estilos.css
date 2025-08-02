@@ -782,13 +782,13 @@ footer p {
 /* Otimização para dispositivos com baixa performance */
 @media (max-width: 768px) {
   .particula {
-    display: none !important;
+    animation-duration: 8s !important;
   }
   .secao-artistas::before {
     display: none !important;
   }
   body::before {
-    display: none !important;
+    opacity: 0.5 !important;
   }
   .secao-sobre::before,
   .secao-representante::before,
@@ -1017,19 +1017,29 @@ footer p {
   
   /* Otimizações críticas para scroll performance */
   .barra-navegacao {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: rgba(18,18,18,0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    background: var(--fundo-navbar) !important;
   }
   .barra-navegacao.scrolled {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: rgba(18,18,18,0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    background: var(--fundo-navbar-scrolled) !important;
   }
   
-  /* Remove partículas no mobile */
+  /* Partículas otimizadas para mobile */
   .fundo-particulas {
-    display: none !important;
+    display: block !important;
+  }
+  .particula {
+    display: block !important;
+    animation-duration: 8s !important;
+  }
+  .particula:nth-child(odd) {
+    animation-duration: 10s !important;
+  }
+  .particula:nth-child(3n) {
+    animation-duration: 12s !important;
   }
   
   /* Remove animações pesadas */
