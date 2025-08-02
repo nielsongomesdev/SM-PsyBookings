@@ -3,11 +3,9 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Fix para vídeo em mobile - versão agressiva
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
     if (video) {
-        // Remove controles programaticamente
         video.removeAttribute('controls');
         video.controls = false;
         video.muted = true;
@@ -16,38 +14,30 @@ document.addEventListener('DOMContentLoaded', () => {
         video.setAttribute('playsinline', '');
         video.setAttribute('autoplay', '');
         video.setAttribute('muted', '');
-        video.style.pointerEvents = 'none'; // Impede interação
-        
-        // Múltiplas tentativas de play
+        video.style.pointerEvents = 'none';
+
         const forcePlay = () => {
             const playPromise = video.play();
             if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    console.log('Tentativa de autoplay falhou, aguardando interação...');
-                });
+                playPromise.catch(() => {});
             }
         };
-        
-        // Tenta imediatamente
+
         forcePlay();
-        
-        // Tenta novamente após um pequeno delay
         setTimeout(forcePlay, 100);
         setTimeout(forcePlay, 500);
-        
-        // Força play em qualquer interação do usuário
+
         const playOnInteraction = () => {
             forcePlay();
             document.removeEventListener('touchstart', playOnInteraction);
             document.removeEventListener('click', playOnInteraction);
             document.removeEventListener('scroll', playOnInteraction);
         };
-        
+
         document.addEventListener('touchstart', playOnInteraction, { once: true });
         document.addEventListener('click', playOnInteraction, { once: true });
         document.addEventListener('scroll', playOnInteraction, { once: true });
-        
-        // Observer para garantir que está tocando quando visível
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && video.paused) {
