@@ -13,12 +13,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
     const mobileImage = document.querySelector('.secao-abertura-imagem-mobile');
     
+    console.log('Video element:', video);
+    console.log('Mobile image element:', mobileImage);
+    console.log('Is mobile device:', isMobileDevice());
+    
     if (isMobileDevice()) {
         // Mobile: esconde vídeo e mostra imagem
-        if (video) video.style.display = 'none';
-        if (mobileImage) mobileImage.style.display = 'block';
+        console.log('Configurando para mobile...');
+        if (video) {
+            video.style.display = 'none';
+            console.log('Video escondido');
+        }
+        if (mobileImage) {
+            mobileImage.style.display = 'block';
+            mobileImage.style.position = 'absolute';
+            mobileImage.style.top = '0';
+            mobileImage.style.left = '0';
+            mobileImage.style.width = '100%';
+            mobileImage.style.height = '100vh';
+            mobileImage.style.zIndex = '1';
+            console.log('Imagem mobile configurada');
+        } else {
+            console.log('Elemento mobile image não encontrado!');
+        }
     } else {
         // Desktop: mostra vídeo e esconde imagem
+        console.log('Configurando para desktop...');
         if (mobileImage) mobileImage.style.display = 'none';
         if (video) {
             video.style.display = 'block';
