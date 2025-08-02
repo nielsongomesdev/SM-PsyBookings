@@ -769,3 +769,35 @@ footer p {
   .carrossel-btn-prev { left: -80px; }
   .carrossel-btn-next { right: -80px; }
 }
+
+/* Classes para controlar visibilidade desktop/mobile */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+
+/* Imagem de fundo para mobile */
+.secao-abertura-imagem-mobile {
+  width: 100%; height: 100vh;
+  background-image: url('../assets/imagem-1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Detecta dispositivos móveis de forma mais ampla */
+@media (max-width: 768px), 
+       (hover: none) and (pointer: coarse), 
+       (-webkit-touch-callout: default) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+}
+
+/* Força mobile em telas muito pequenas */
+@media (max-width: 480px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+}

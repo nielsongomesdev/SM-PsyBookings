@@ -3,49 +3,46 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
+// Detecta se é dispositivo móvel
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+}
+
+// Configuração de vídeo baseada no dispositivo
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
-    if (video) {
-        video.removeAttribute('controls');
-        video.controls = false;
-        video.muted = true;
-        video.playsInline = true;
-        video.setAttribute('webkit-playsinline', '');
-        video.setAttribute('playsinline', '');
-        video.setAttribute('autoplay', '');
-        video.setAttribute('muted', '');
-        video.style.pointerEvents = 'none';
-
-        const forcePlay = () => {
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {});
-            }
-        };
-
-        forcePlay();
-        setTimeout(forcePlay, 100);
-        setTimeout(forcePlay, 500);
-
-        const playOnInteraction = () => {
-            forcePlay();
-            document.removeEventListener('touchstart', playOnInteraction);
-            document.removeEventListener('click', playOnInteraction);
-            document.removeEventListener('scroll', playOnInteraction);
-        };
-
-        document.addEventListener('touchstart', playOnInteraction, { once: true });
-        document.addEventListener('click', playOnInteraction, { once: true });
-        document.addEventListener('scroll', playOnInteraction, { once: true });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && video.paused) {
-                    forcePlay();
-                }
-            });
-        });
-        observer.observe(video);
+    const mobileImage = document.querySelector('.secao-abertura-imagem-mobile');
+    
+    if (isMobileDevice()) {
+        // Mobile: esconde vídeo e mostra imagem
+        if (video) video.style.display = 'none';
+        if (mobileImage) mobileImage.style.display = 'block';
+    } else {
+        // Desktop: mostra vídeo e esconde imagem
+        if (mobileImage) mobileImage.style.display = 'none';
+        if (video) {
+            video.style.display = 'block';
+            video.muted = true;
+            video.playsInline = true;
+            
+            // Tenta tocar o vídeo
+            const tryPlay = () => {
+                video.play().catch(() => {
+                    // Se falhar, adiciona listener para primeira interação
+                    const playOnFirstClick = () => {
+                        video.play();
+                        document.removeEventListener('click', playOnFirstClick);
+                        document.removeEventListener('touchstart', playOnFirstClick);
+                    };
+                    document.addEventListener('click', playOnFirstClick, { once: true });
+                    document.addEventListener('touchstart', playOnFirstClick, { once: true });
+                });
+            };
+            
+            // Tenta tocar imediatamente e depois de um delay
+            tryPlay();
+            setTimeout(tryPlay, 1000);
+        }
     }
 });
 
