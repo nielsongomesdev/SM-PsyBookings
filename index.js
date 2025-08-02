@@ -243,10 +243,13 @@ class CarrosselDepoimentos {
         this.btnPrev = document.querySelector('.carrossel-btn-prev');
         this.btnNext = document.querySelector('.carrossel-btn-next');
         this.startX = 0;
+        this.startY = 0;
         this.endX = 0;
+        this.endY = 0;
         this.threshold = 50;
         this.isInteracting = false;
         this.autoPlayInterval = null;
+        this.isHorizontalSwipe = false;
         this.init();
     }
 
@@ -257,7 +260,7 @@ class CarrosselDepoimentos {
         this.indicadores.forEach((indicador, i) =>
             indicador.addEventListener('click', () => this.irPara(i))
         );
-        this.container?.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: false });
+        this.container?.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: true });
         this.container?.addEventListener('touchmove', e => this.handleTouchMove(e), { passive: false });
         this.container?.addEventListener('touchend', e => this.handleTouchEnd(e), { passive: true });
         this.container?.addEventListener('mousedown', e => this.handleMouseDown(e));
@@ -299,56 +302,102 @@ class CarrosselDepoimentos {
 
     handleTouchStart(e) {
         this.startX = e.touches[0].clientX;
-        this.isInteracting = true;
+        this.startY = e.touches[0].clientY;
+        this.isInteracting = false; // Não define como true ainda
+        this.isHorizontalSwipe = false;
         this.stopAutoPlay();
     }
+    
     handleTouchMove(e) {
-        if (!this.isInteracting) return;
-        e.preventDefault();
+        if (!this.startX || !this.startY) return;
+        
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - this.startX);
+        const diffY = Math.abs(currentY - this.startY);
+        
+        // Determina se é um swipe horizontal ou vertical
+        if (diffX > 10 || diffY > 10) { // Threshold mínimo para determinar direção
+            if (diffX > diffY) {
+                // Movimento horizontal - ativa interação do carrossel
+                this.isHorizontalSwipe = true;
+                this.isInteracting = true;
+                e.preventDefault(); // Previne scroll apenas para movimento horizontal
+            } else {
+                // Movimento vertical - permite scroll da página
+                this.isHorizontalSwipe = false;
+                this.isInteracting = false;
+                // NÃO previne o evento - permite scroll normal
+            }
+        }
     }
+    
     handleTouchEnd(e) {
-        if (!this.isInteracting) return;
+        if (!this.isInteracting || !this.isHorizontalSwipe) {
+            // Se não foi um swipe horizontal válido, não faz nada
+            this.isInteracting = false;
+            this.isHorizontalSwipe = false;
+            setTimeout(() => this.startAutoPlay(), 3000);
+            return;
+        }
+        
         this.endX = e.changedTouches[0].clientX;
+        this.endY = e.changedTouches[0].clientY;
         this.handleSwipe();
         this.isInteracting = false;
+        this.isHorizontalSwipe = false;
         setTimeout(() => this.startAutoPlay(), 3000);
     }
+    
     handleMouseDown(e) {
         this.startX = e.clientX;
+        this.startY = e.clientY;
         this.isInteracting = true;
+        this.isHorizontalSwipe = true; // Mouse sempre permite interação
         this.container.style.cursor = 'grabbing';
         this.stopAutoPlay();
     }
+    
     handleMouseMove(e) {
         if (!this.isInteracting) return;
         e.preventDefault();
     }
+    
     handleMouseUp(e) {
         if (!this.isInteracting) return;
         this.endX = e.clientX;
+        this.endY = e.clientY;
         this.container.style.cursor = 'grab';
         this.handleSwipe();
         this.isInteracting = false;
+        this.isHorizontalSwipe = false;
         setTimeout(() => this.startAutoPlay(), 3000);
     }
+    
     handleSwipe() {
-        const diff = this.startX - this.endX;
-        if (Math.abs(diff) > this.threshold) {
-            diff > 0 ? this.slideNext() : this.slidePrev();
+        const diffX = this.startX - this.endX;
+        const diffY = Math.abs(this.startY - this.endY);
+        
+        // Só executa o swipe se for predominantemente horizontal
+        if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY) {
+            diffX > 0 ? this.slideNext() : this.slidePrev();
         }
     }
+    
     startAutoPlay() {
         if (this.autoPlayInterval) return;
         this.autoPlayInterval = setInterval(() => {
             if (!this.isInteracting) this.slideNext();
         }, 6000);
     }
+    
     stopAutoPlay() {
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
             this.autoPlayInterval = null;
         }
     }
+    
     resetAutoPlay() {
         this.stopAutoPlay();
         setTimeout(() => this.startAutoPlay(), 1000);
