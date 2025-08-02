@@ -191,7 +191,13 @@ document.addEventListener('click', e => {
 
 const observador = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-        entry.target.classList.toggle('visible', entry.isIntersecting);
+        // Só aplica efeitos de scroll em desktop (768px+)
+        if (window.innerWidth >= 768) {
+            entry.target.classList.toggle('visible', entry.isIntersecting);
+        } else {
+            // No mobile, sempre marca como visível
+            entry.target.classList.add('visible');
+        }
     });
 });
 document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(card));
