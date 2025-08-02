@@ -1,8 +1,0 @@
-﻿*.js linguist-language=JavaScript
-*.css linguist-language=CSS
-*.html linguist-language=HTML
-*.png linguist-vendored
-*.jpg linguist-vendored
-*.jpeg linguist-vendored
-*.gif linguist-vendored
-*.mp4 linguist-vendored
