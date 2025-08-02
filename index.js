@@ -1,3 +1,17 @@
+// Força scroll para o topo ao carregar/recarregar a página
+window.addEventListener('load', function() {
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, 100);
+});
+
+// Força scroll para o topo antes de descarregar a página
+window.addEventListener('beforeunload', function() {
+  window.scrollTo(0, 0);
+});
+
 window.addEventListener('scroll', () => {
     const barraNavegacao = document.querySelector('.barra-navegacao');
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
@@ -205,16 +219,21 @@ document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(
 function criarParticulas() {
     const container = document.querySelector('.fundo-particulas');
     if (!container) return;
+    
+    // Limpa partículas existentes
     container.innerHTML = '';
     
     // Reduz partículas no mobile para melhor performance
     const isMobile = window.innerWidth <= 768;
     const quantidadeParticulas = isMobile ? 25 : 50;
     
+    console.log(`Criando ${quantidadeParticulas} partículas para dispositivo ${isMobile ? 'mobile' : 'desktop'}`);
+    
     Array.from({ length: quantidadeParticulas }).forEach(() => {
         const particula = document.createElement('div');
         particula.className = 'particula';
         particula.style.left = `${Math.random() * 100}%`;
+        particula.style.top = `${Math.random() * 100}%`;
         particula.style.animationDelay = `${Math.random() * 6}s`;
         
         // Animações mais lentas no mobile
@@ -226,6 +245,11 @@ function criarParticulas() {
         particula.style.height = `${tamanho}px`;
         container.appendChild(particula);
     });
+    
+    // Force reflow para garantir que as partículas apareçam no mobile
+    container.style.display = 'none';
+    container.offsetHeight; // trigger reflow
+    container.style.display = 'block';
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
