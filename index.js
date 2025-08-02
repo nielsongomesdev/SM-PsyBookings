@@ -3,15 +3,15 @@ window.addEventListener('scroll', () => {
     barraNavegacao?.classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Solução DEFINITIVA para autoplay mobile - Intercepta e força autoplay
+// SOLUÇÃO RADICAL: Auto-clique no primeiro toque para forçar autoplay
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
     
     if (!video) return;
     
-    console.log('🎬 Iniciando solução DEFINITIVA de autoplay mobile...');
+    console.log('🎬 Iniciando SOLUÇÃO RADICAL para autoplay mobile...');
     
-    // Configuração base ultra-agressiva
+    // Configuração base
     video.muted = true;
     video.autoplay = true;
     video.loop = true;
@@ -20,182 +20,151 @@ document.addEventListener('DOMContentLoaded', () => {
     video.volume = 0;
     video.defaultMuted = true;
     
-    // Remove todos os atributos de controle
-    video.removeAttribute('controls');
-    video.setAttribute('playsinline', 'true');
-    video.setAttribute('webkit-playsinline', 'true');
-    video.setAttribute('muted', 'true');
-    video.setAttribute('autoplay', 'true');
-    video.setAttribute('loop', 'true');
+    // Atributos obrigatórios
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
+    video.setAttribute('loop', '');
     video.setAttribute('preload', 'auto');
     
-    // Função ultra-forçada de play
+    let hasUserInteracted = false;
+    let autoPlayAttempted = false;
+    
+    // Função principal de play
     const forcePlay = async () => {
         try {
             video.muted = true;
             video.volume = 0;
-            video.defaultMuted = true;
-            
             const playPromise = video.play();
             await playPromise;
-            
-            console.log('✅ SUCESSO: Vídeo tocando!');
+            console.log('✅ Vídeo tocando!');
             return true;
         } catch (error) {
-            console.log('❌ Falha no autoplay:', error.message);
+            console.log('❌ Erro no play:', error.message);
             return false;
         }
     };
     
-    // SOLUÇÃO INOVADORA: Criar overlay invisível que intercepta cliques
-    const createInvisibleOverlay = () => {
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999;
-            background: transparent;
-            cursor: pointer;
-            pointer-events: auto;
-        `;
+    // ESTRATÉGIA 1: Intercepta o primeiro toque e força play imediatamente
+    const handleFirstInteraction = async (event) => {
+        if (hasUserInteracted) return;
         
-        // Intercepta QUALQUER clique no vídeo
-        overlay.addEventListener('click', async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            console.log('🚀 Clique interceptado - forçando autoplay!');
-            
-            const success = await forcePlay();
-            if (success) {
-                // Remove o overlay após sucesso
-                overlay.remove();
-                console.log('✅ Overlay removido - autoplay funcionando!');
-            }
-        }, { capture: true });
+        hasUserInteracted = true;
+        console.log('🚀 PRIMEIRA INTERAÇÃO DETECTADA - Forçando autoplay!');
         
-        // Adiciona o overlay sobre o vídeo
-        const videoContainer = video.parentElement;
-        videoContainer.style.position = 'relative';
-        videoContainer.appendChild(overlay);
+        // Para o evento para não interferir
+        event.preventDefault();
+        event.stopPropagation();
         
-        console.log('🎯 Overlay invisível criado para interceptar cliques');
+        // Força play imediatamente
+        const success = await forcePlay();
         
-        // Remove overlay automaticamente após 5 segundos se o vídeo estiver tocando
-        setTimeout(() => {
-            if (!video.paused && overlay.parentElement) {
-                overlay.remove();
-                console.log('⏰ Overlay removido automaticamente');
-            }
-        }, 5000);
-    };
-    
-    // Tentativas imediatas de autoplay
-    const attemptImmediatePlay = async () => {
-        // Múltiplas tentativas em cascata
-        for (let i = 0; i < 10; i++) {
-            setTimeout(async () => {
-                const success = await forcePlay();
-                if (success) {
-                    console.log(`✅ Autoplay funcionou na tentativa ${i + 1}`);
-                    return;
-                }
-            }, i * 100);
+        if (success) {
+            console.log('✅ SUCESSO: Autoplay ativado no primeiro toque!');
+            // Remove todos os listeners após sucesso
+            document.removeEventListener('touchstart', handleFirstInteraction, true);
+            document.removeEventListener('click', handleFirstInteraction, true);
         }
     };
     
-    // Inicia tentativas
-    attemptImmediatePlay();
-    
-    // Cria overlay para interceptar cliques
-    createInvisibleOverlay();
-    
-    // Força play em QUALQUER interação
-    const instantPlay = async () => {
-        await forcePlay();
-        console.log('🚀 Play forçado por interação');
-    };
-    
-    // Captura todos os tipos de eventos
-    const events = [
-        'click', 'touchstart', 'touchend', 'touchmove', 
-        'keydown', 'scroll', 'mousemove', 'mousedown',
-        'focus', 'blur', 'resize', 'orientationchange'
-    ];
-    
-    events.forEach(eventType => {
-        document.addEventListener(eventType, instantPlay, { 
-            once: true, 
-            passive: true,
-            capture: true 
-        });
-    });
-    
-    // Observer ultra-sensível
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
+    // ESTRATÉGIA 2: Auto-clique simulado
+    const simulateAutoClick = () => {
+        setTimeout(() => {
+            if (!hasUserInteracted && video.paused) {
+                console.log('🤖 Simulando clique automático...');
+                
+                // Cria e dispara evento de touch
+                const touchEvent = new TouchEvent('touchstart', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    touches: [{
+                        clientX: window.innerWidth / 2,
+                        clientY: window.innerHeight / 2,
+                        target: video
+                    }]
+                });
+                
+                video.dispatchEvent(touchEvent);
                 forcePlay();
             }
-        });
-    }, { 
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0],
-        rootMargin: '100px'
-    });
-    observer.observe(video);
+        }, 1000);
+    };
     
-    // Eventos específicos do vídeo
-    video.addEventListener('loadstart', forcePlay);
+    // ESTRATÉGIA 3: Captura QUALQUER interação na página
+    const captureAnyInteraction = (event) => {
+        if (!autoPlayAttempted) {
+            autoPlayAttempted = true;
+            console.log('🎯 Interação capturada em:', event.type);
+            forcePlay();
+        }
+    };
+    
+    // Adiciona listeners para primeira interação (capture phase)
+    document.addEventListener('touchstart', handleFirstInteraction, { capture: true, passive: false });
+    document.addEventListener('click', handleFirstInteraction, { capture: true, passive: false });
+    
+    // Adiciona listeners para qualquer interação
+    ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown'].forEach(event => {
+        document.addEventListener(event, captureAnyInteraction, { once: true, passive: true });
+    });
+    
+    // Tentativas de autoplay tradicional
+    const attemptAutoplay = async () => {
+        for (let i = 0; i < 5; i++) {
+            setTimeout(async () => {
+                if (!hasUserInteracted && video.paused) {
+                    await forcePlay();
+                }
+            }, i * 200);
+        }
+    };
+    
+    // Eventos do vídeo
     video.addEventListener('loadeddata', forcePlay);
-    video.addEventListener('loadedmetadata', forcePlay);
     video.addEventListener('canplay', forcePlay);
     video.addEventListener('canplaythrough', forcePlay);
     
-    // Anti-pausa ultra-agressivo
+    // Anti-pausa
     video.addEventListener('pause', () => {
-        console.log('⚠️ Vídeo pausou - forçando play imediatamente');
-        setTimeout(forcePlay, 10);
-        setTimeout(forcePlay, 50);
-        setTimeout(forcePlay, 100);
+        if (hasUserInteracted) {
+            console.log('⚠️ Vídeo pausou - reativando...');
+            setTimeout(forcePlay, 100);
+        }
     });
     
-    // Monitora mudanças de visibilidade
+    // Observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && video.paused) {
+                forcePlay();
+            }
+        });
+    }, { threshold: 0.5 });
+    observer.observe(video);
+    
+    // Eventos de página
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && video.paused) {
+        if (!document.hidden && video.paused && hasUserInteracted) {
             forcePlay();
         }
     });
     
-    // Força play quando janela ganha foco
-    window.addEventListener('focus', forcePlay);
-    window.addEventListener('load', forcePlay);
+    // Inicia todas as estratégias
+    attemptAutoplay();
+    simulateAutoClick();
     
-    // Tentativa final após carregamento completo
+    // HACK ESPECIAL: Força play depois de um tempo se nada funcionou
     setTimeout(() => {
-        if (video.paused) {
-            console.log('🔄 Tentativa final após 3 segundos...');
+        if (video.paused && !hasUserInteracted) {
+            console.log('� HACK FINAL: Forçando play após 3 segundos...');
+            hasUserInteracted = true; // Simula que o usuário interagiu
             forcePlay();
         }
     }, 3000);
     
-    // HACK ESPECÍFICO PARA iOS: Simula user gesture
-    const simulateUserGesture = () => {
-        const event = new TouchEvent('touchstart', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-        });
-        video.dispatchEvent(event);
-        forcePlay();
-    };
-    
-    // Tenta simular gesture após 1 segundo
-    setTimeout(simulateUserGesture, 1000);
-    
-    console.log('⚡ Solução DEFINITIVA configurada - interceptando todos os cliques!');
+    console.log('⚡ SOLUÇÃO RADICAL configurada - aguardando primeira interação...');
 });
 
 const menuHamburguer = document.querySelector('.menu-hamburguer');
