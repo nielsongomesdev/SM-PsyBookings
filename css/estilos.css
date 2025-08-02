@@ -157,7 +157,7 @@ main { margin-top: 0; margin-bottom: 0; }
   min-height: 100vh;
 }
 
-/* Vídeo otimizado - Configuração minimalista para máxima compatibilidade */
+/* Vídeo - Permite interação mas esconde controles visualmente */
 .secao-abertura-video { 
   width: 100%; 
   height: auto; 
@@ -167,27 +167,40 @@ main { margin-top: 0; margin-bottom: 0; }
   min-height: 100vh;
   position: relative;
   z-index: 1;
+  /* Permite cliques para auto-clique funcionar */
+  pointer-events: auto;
 }
 
-/* Remove APENAS os controles essenciais - não toca em pointer-events */
+/* Esconde controles visualmente mas mantém funcionalidade */
 .secao-abertura-video::-webkit-media-controls {
-  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .secao-abertura-video::-webkit-media-controls-panel {
-  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 .secao-abertura-video::-webkit-media-controls-play-button {
-  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 .secao-abertura-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 .secao-abertura-video::-webkit-media-controls-overlay-play-button {
-  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  /* MAS mantém a funcionalidade para auto-clique */
+  display: block !important;
+  pointer-events: auto !important;
 }
 
 /* Remove TODOS os controles WebKit possíveis */
