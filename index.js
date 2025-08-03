@@ -1,228 +1,425 @@
-const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const isLowPowerMode = navigator.connection && navigator.connection.saveData;
+const DeviceDetector = {
+    isMobile: /Mobi|Android/i.test(navigator.userAgent),
+    isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+    isSafari: /^((?!chrome|android).)*safari/i.test(navigator.userAgent),
+    isLowPowerMode: navigator.connection && navigator.connection.saveData
+};
 
-window.addEventListener('load', async () => {
-    try {
-        await new Promise(resolve => {
-            if (document.readyState === 'complete') resolve();
-            else window.addEventListener('load', resolve, { once: true });
+const CONFIG = {
+    scroll: {
+        navbarThreshold: 50,
+        smoothScrollThreshold: 5
+    },
+    video: {
+        maxPlayAttempts: 10,
+        retryDelay: 500,
+        interactionTimeout: 3000,
+        fallbackTimeout: 5000
+    },
+    particles: {
+        mobile: 8,
+        desktop: 12,
+        recreateInterval: 30000
+    },
+    carousel: {
+        swipeThreshold: 50,
+        autoPlayDelay: 6000,
+        resetDelay: 1000,
+        interactionDelay: 3000
+    }
+};
+
+class ScrollManager {
+    static async initializeScrollBehavior() {
+        try {
+            await this.waitForPageLoad();
+            const navigationData = this.getNavigationData();
+            await this.handleScrollRestoration(navigationData);
+            sessionStorage.setItem('hasVisited', 'true');
+        } catch (error) {
+            console.warn('Erro na inicialização do scroll:', error);
+        }
+    }
+
+    static async waitForPageLoad() {
+        return new Promise(resolve => {
+            if (document.readyState === 'complete') {
+                resolve();
+            } else {
+                window.addEventListener('load', resolve, { once: true });
+            }
         });
+    }
+
+    static getNavigationData() {
         const nav = performance.getEntriesByType('navigation')[0];
-        const isBack = nav && nav.type === 'back_forward';
-        const isReload = nav && nav.type === 'reload';
-        const firstVisit = !sessionStorage.getItem('hasVisited');
-        const fromExternal = !document.referrer || !document.referrer.includes(location.hostname);
-        if ((firstVisit || fromExternal) && !isBack && !isReload) {
+        return {
+            isBack: nav && nav.type === 'back_forward',
+            isReload: nav && nav.type === 'reload',
+            firstVisit: !sessionStorage.getItem('hasVisited'),
+            fromExternal: !document.referrer || !document.referrer.includes(location.hostname),
+            savedPosition: sessionStorage.getItem('scrollPosition'),
+            clickedExternal: sessionStorage.getItem('clickedExternalLink')
+        };
+    }
+
+    static async handleScrollRestoration({ clickedExternal, savedPosition, firstVisit, fromExternal, isBack, isReload }) {
+        if (clickedExternal && savedPosition) {
+            sessionStorage.removeItem('clickedExternalLink');
+            console.log('🎯 Restaurando posição:', savedPosition);
+            await new Promise(r => requestAnimationFrame(() => {
+                window.scrollTo(0, parseInt(savedPosition));
+                r();
+            }));
+        } else if ((firstVisit || fromExternal) && !isBack && !isReload && !clickedExternal) {
             await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
             scrollTo({ top: 0, behavior: 'smooth' });
         }
-        sessionStorage.setItem('hasVisited', 'true');
-    } catch {}
-});
-
-window.addEventListener('scroll', () => {
-    document.querySelector('.barra-navegacao')?.classList.toggle('scrolled', scrollY > 50);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const video = document.querySelector('.secao-abertura-video');
-    if (!video) return;
-    Object.assign(video, {
-        muted: true, autoplay: true, loop: true, playsInline: true, controls: false, volume: 0, defaultMuted: true
-    });
-    ['playsinline', 'webkit-playsinline', 'muted', 'autoplay', 'loop', 'preload', 'x-webkit-airplay', 'disablepictureinpicture'].forEach(attr =>
-        video.setAttribute(attr, attr === 'preload' ? 'metadata' : '')
-    );
-    video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplaybook');
-    let hasUserInteracted = false, autoPlayAttempted = false, playAttempts = 0, maxPlayAttempts = 10;
-    const forcePlay = async () => {
-        try {
-            if (++playAttempts > maxPlayAttempts) return false;
-            video.muted = true; video.volume = 0;
-            if (isIOS || isSafari) await new Promise(r => setTimeout(r, 100));
-            await video.play();
-            return !video.paused;
-        } catch {
-            if (isLowPowerMode || (isMobile && !hasUserInteracted)) return false;
-            if (playAttempts < maxPlayAttempts) setTimeout(forcePlay, 500);
-            return false;
-        }
-    };
-    const handleFirstInteraction = async e => {
-        if (hasUserInteracted) return;
-        hasUserInteracted = true;
-        e.preventDefault(); e.stopPropagation();
-        if (await forcePlay()) {
-            document.removeEventListener('touchstart', handleFirstInteraction, true);
-            document.removeEventListener('click', handleFirstInteraction, true);
-        }
-    };
-    const captureAnyInteraction = () => {
-        if (!autoPlayAttempted) {
-            autoPlayAttempted = true;
-            forcePlay();
-        }
-    };
-    document.addEventListener('touchstart', handleFirstInteraction, { capture: true, passive: false });
-    document.addEventListener('click', handleFirstInteraction, { capture: true, passive: false });
-    ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown', 'mousedown', 'wheel', 'focus']
-        .forEach(ev => document.addEventListener(ev, captureAnyInteraction, { once: true, passive: true }));
-    const attemptAutoplay = () => {
-        [0, 100, 300, 500, 1000, 2000].forEach(delay =>
-            setTimeout(async () => {
-                if (!hasUserInteracted && video.paused && playAttempts < maxPlayAttempts) await forcePlay();
-            }, delay)
-        );
-        if (video.readyState >= 2) setTimeout(() => { if (video.paused && !hasUserInteracted) forcePlay(); }, 3000);
-    };
-    ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach(ev =>
-        video.addEventListener(ev, forcePlay)
-    );
-    video.addEventListener('pause', () => { if (hasUserInteracted && !isLowPowerMode) setTimeout(forcePlay, 100); });
-    video.addEventListener('ended', () => { if (video.loop) forcePlay(); });
-    new IntersectionObserver(entries => {
-        entries.forEach(entry => { if (entry.isIntersecting && video.paused) forcePlay(); });
-    }, { threshold: 0.5 }).observe(video);
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && video.paused && hasUserInteracted) forcePlay();
-    });
-    attemptAutoplay();
-    setTimeout(() => { if (video.paused && !hasUserInteracted) { hasUserInteracted = true; forcePlay(); } }, 3000);
-    setTimeout(() => {
-        if (video.paused && video.readyState >= 2) {
-            video.muted = true;
-            video.play().catch(() => {
-                if (!isMobile) {
-                    const btn = document.createElement('button');
-                    btn.innerHTML = 'Clique para reproduzir o vídeo';
-                    btn.style.cssText = `
-                        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                        z-index: 10; background: rgba(0,0,0,0.8); color: white; border: none;
-                        padding: 15px 25px; border-radius: 25px; font-size: 16px; cursor: pointer;
-                    `;
-                    btn.onclick = () => { video.play(); btn.remove(); };
-                    video.parentElement.style.position = 'relative';
-                    video.parentElement.appendChild(btn);
-                }
-            });
-        }
-    }, 5000);
-});
-
-const menuHamburguer = document.querySelector('.menu-hamburguer');
-const menuLinks = document.querySelector('.barra-navegacao-menu');
-menuHamburguer?.addEventListener('click', () => {
-    menuHamburguer.classList.toggle('active');
-    menuLinks?.classList.toggle('active');
-});
-document.querySelectorAll('.barra-navegacao-menu a').forEach(link =>
-    link.addEventListener('click', () => {
-        menuHamburguer?.classList.remove('active');
-        menuLinks?.classList.remove('active');
-    })
-);
-document.addEventListener('click', e => {
-    if (!menuHamburguer?.contains(e.target) && !menuLinks?.contains(e.target)) {
-        menuHamburguer?.classList.remove('active');
-        menuLinks?.classList.remove('active');
     }
-});
 
-const observador = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        if (innerWidth >= 768)
-            entry.target.classList.toggle('visible', entry.isIntersecting);
-        else
-            entry.target.classList.add('visible');
-    });
-});
-document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(card));
+    static handleScrollEvents() {
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.barra-navegacao');
+            navbar?.classList.toggle('scrolled', scrollY > CONFIG.scroll.navbarThreshold);
+            sessionStorage.setItem('scrollPosition', scrollY.toString());
+        });
+    }
 
-async function criarParticulas() {
-    const container = document.querySelector('.fundo-particulas');
-    if (!container) return;
-    try {
-        await new Promise(r => requestAnimationFrame(() => { container.innerHTML = ''; r(); }));
-        const qtd = innerWidth <= 768 ? 8 : 12;
-        const frag = document.createDocumentFragment();
-        for (let i = 0; i < qtd; i++) {
-            const p = document.createElement('div');
-            p.className = 'particula';
-            p.style.left = `${Math.random() * 100}%`;
-            p.style.top = `100vh`;
-            p.style.animationDelay = `${Math.random() * 8}s`;
-            p.style.animationDuration = `${(innerWidth <= 768 ? 10 : 8) + Math.random() * 4}s`;
-            const t = 1 + Math.random() * 2;
-            p.style.width = `${t}px`; p.style.height = `${t}px`;
-            frag.appendChild(p);
-        }
-        await new Promise(r => requestAnimationFrame(() => {
-            container.appendChild(frag);
-            container.style.display = 'none'; container.offsetHeight; container.style.display = 'block';
-            r();
-        }));
-    } catch {}
-}
+    static handleExternalLinks() {
+        document.querySelectorAll('a[target="_blank"], a[href^="http"], a[href^="mailto"]').forEach(link =>
+            link.addEventListener('click', async () => {
+                try {
+                    const position = scrollY.toString();
+                    console.log('🔗 Link externo clicado, salvando posição:', position);
+                    sessionStorage.setItem('scrollPosition', position);
+                    sessionStorage.setItem('clickedExternalLink', 'true');
+                    await new Promise(r => setTimeout(r, 10));
+                } catch (error) {
+                    console.warn('Erro ao salvar posição:', error);
+                }
+            })
+        );
+    }
 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-});
+    static handleBeforeUnload() {
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('scrollPosition', scrollY.toString());
+        });
+    }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const logo = document.querySelector('.barra-navegacao-logo');
-        if (logo) {
-            logo.addEventListener('click', async e => {
+    static setupSmoothAnchorScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                await new Promise(resolve => {
-                    scrollTo({ top: 0, behavior: 'smooth' });
-                    (function check() {
-                        if (scrollY <= 5) resolve();
-                        else requestAnimationFrame(check);
-                    })();
+                document.querySelector(this.getAttribute('href'))?.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
                 });
             });
-            logo.style.cursor = 'pointer';
-        }
-        await new Promise(r => requestAnimationFrame(() => {
-            document.querySelectorAll('a[target="_blank"], a[href^="http"], a[href^="mailto"]').forEach(link =>
-                link.addEventListener('click', async () => {
-                    try {
-                        sessionStorage.setItem('scrollPosition', scrollY.toString());
-                        sessionStorage.setItem('clickedExternalLink', 'true');
-                        await new Promise(r2 => setTimeout(r2, 10));
-                    } catch {}
-                })
-            );
-            r();
-        }));
-    } catch {}
-});
-
-window.addEventListener('focus', async () => {
-    try {
-        if (sessionStorage.getItem('clickedExternalLink')) {
-            sessionStorage.removeItem('clickedExternalLink');
-            await new Promise(r => requestAnimationFrame(r));
-            scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    } catch {}
-});
-
-function abrirEmail() {
-    if (innerWidth > 768) {
-        window.open(
-            'https://mail.google.com/mail/?view=cm&fs=1&to=smpsybookings@gmail.com&su=Contato%20via%20Site%20S%26M%20PsyBookings',
-            '_blank'
-        );
-        return false;
+        });
     }
-    return true;
+
+    static async setupLogoScrollToTop() {
+        const logo = document.querySelector('.barra-navegacao-logo');
+        if (!logo) return;
+
+        logo.addEventListener('click', async e => {
+            e.preventDefault();
+            await new Promise(resolve => {
+                scrollTo({ top: 0, behavior: 'smooth' });
+                (function check() {
+                    if (scrollY <= CONFIG.scroll.smoothScrollThreshold) resolve();
+                    else requestAnimationFrame(check);
+                })();
+            });
+        });
+        logo.style.cursor = 'pointer';
+    }
+}
+
+class VideoAutoplayManager {
+    constructor() {
+        this.video = null;
+        this.hasUserInteracted = false;
+        this.autoPlayAttempted = false;
+        this.playAttempts = 0;
+        this.maxPlayAttempts = CONFIG.video.maxPlayAttempts;
+    }
+
+    async initialize() {
+        this.video = document.querySelector('.secao-abertura-video');
+        if (!this.video) return;
+
+        this.setupVideoAttributes();
+        this.setupEventListeners();
+        this.attemptAutoplay();
+        this.setupFallbackButton();
+    }
+
+    setupVideoAttributes() {
+        Object.assign(this.video, {
+            muted: true,
+            autoplay: true,
+            loop: true,
+            playsInline: true,
+            controls: false,
+            volume: 0,
+            defaultMuted: true
+        });
+
+        const attributes = [
+            'playsinline', 'webkit-playsinline', 'muted', 'autoplay', 
+            'loop', 'preload', 'x-webkit-airplay', 'disablepictureinpicture'
+        ];
+        
+        attributes.forEach(attr => {
+            this.video.setAttribute(attr, attr === 'preload' ? 'metadata' : '');
+        });
+
+        this.video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplaybook');
+    }
+
+    async forcePlay() {
+        try {
+            if (++this.playAttempts > this.maxPlayAttempts) return false;
+            
+            this.video.muted = true;
+            this.video.volume = 0;
+            
+            if (DeviceDetector.isIOS || DeviceDetector.isSafari) {
+                await new Promise(r => setTimeout(r, 100));
+            }
+            
+            await this.video.play();
+            return !this.video.paused;
+        } catch (error) {
+            if (DeviceDetector.isLowPowerMode || (DeviceDetector.isMobile && !this.hasUserInteracted)) {
+                return false;
+            }
+            
+            if (this.playAttempts < this.maxPlayAttempts) {
+                setTimeout(() => this.forcePlay(), CONFIG.video.retryDelay);
+            }
+            return false;
+        }
+    }
+
+    async handleFirstInteraction(e) {
+        if (this.hasUserInteracted) return;
+        
+        this.hasUserInteracted = true;
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (await this.forcePlay()) {
+            document.removeEventListener('touchstart', this.handleFirstInteraction, true);
+            document.removeEventListener('click', this.handleFirstInteraction, true);
+        }
+    }
+
+    captureAnyInteraction() {
+        if (!this.autoPlayAttempted) {
+            this.autoPlayAttempted = true;
+            this.forcePlay();
+        }
+    }
+
+    setupEventListeners() {
+        document.addEventListener('touchstart', (e) => this.handleFirstInteraction(e), { capture: true, passive: false });
+        document.addEventListener('click', (e) => this.handleFirstInteraction(e), { capture: true, passive: false });
+        
+        const interactionEvents = ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown', 'mousedown', 'wheel', 'focus'];
+        interactionEvents.forEach(ev => 
+            document.addEventListener(ev, () => this.captureAnyInteraction(), { once: true, passive: true })
+        );
+
+        const videoEvents = ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'];
+        videoEvents.forEach(ev => this.video.addEventListener(ev, () => this.forcePlay()));
+
+        this.video.addEventListener('pause', () => {
+            if (this.hasUserInteracted && !DeviceDetector.isLowPowerMode) {
+                setTimeout(() => this.forcePlay(), 100);
+            }
+        });
+
+        this.video.addEventListener('ended', () => {
+            if (this.video.loop) this.forcePlay();
+        });
+
+        new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && this.video.paused) {
+                    this.forcePlay();
+                }
+            });
+        }, { threshold: 0.5 }).observe(this.video);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && this.video.paused && this.hasUserInteracted) {
+                this.forcePlay();
+            }
+        });
+    }
+
+    attemptAutoplay() {
+        const delays = [0, 100, 300, 500, 1000, 2000];
+        delays.forEach(delay =>
+            setTimeout(async () => {
+                if (!this.hasUserInteracted && this.video.paused && this.playAttempts < this.maxPlayAttempts) {
+                    await this.forcePlay();
+                }
+            }, delay)
+        );
+
+        if (this.video.readyState >= 2) {
+            setTimeout(() => {
+                if (this.video.paused && !this.hasUserInteracted) {
+                    this.forcePlay();
+                }
+            }, CONFIG.video.interactionTimeout);
+        }
+    }
+
+    setupFallbackButton() {
+        setTimeout(() => {
+            if (this.video.paused && !this.hasUserInteracted) {
+                this.hasUserInteracted = true;
+                this.forcePlay();
+            }
+        }, CONFIG.video.interactionTimeout);
+
+        setTimeout(() => {
+            if (this.video.paused && this.video.readyState >= 2) {
+                this.video.muted = true;
+                this.video.play().catch(() => {
+                    if (!DeviceDetector.isMobile) {
+                        this.createPlayButton();
+                    }
+                });
+            }
+        }, CONFIG.video.fallbackTimeout);
+    }
+
+    createPlayButton() {
+        const btn = document.createElement('button');
+        btn.innerHTML = 'Clique para reproduzir o vídeo';
+        btn.style.cssText = `
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; background: rgba(0,0,0,0.8); color: white; border: none;
+            padding: 15px 25px; border-radius: 25px; font-size: 16px; cursor: pointer;
+            transition: all 0.3s ease;
+        `;
+        
+        btn.onmouseenter = () => btn.style.background = 'rgba(0,0,0,0.9)';
+        btn.onmouseleave = () => btn.style.background = 'rgba(0,0,0,0.8)';
+        btn.onclick = () => {
+            this.video.play();
+            btn.remove();
+        };
+        
+        this.video.parentElement.style.position = 'relative';
+        this.video.parentElement.appendChild(btn);
+    }
+}
+
+class MobileMenuManager {
+    static initialize() {
+        const menuHamburguer = document.querySelector('.menu-hamburguer');
+        const menuLinks = document.querySelector('.barra-navegacao-menu');
+
+        if (!menuHamburguer || !menuLinks) return;
+
+        menuHamburguer.addEventListener('click', () => {
+            menuHamburguer.classList.toggle('active');
+            menuLinks.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.barra-navegacao-menu a').forEach(link =>
+            link.addEventListener('click', () => {
+                menuHamburguer.classList.remove('active');
+                menuLinks.classList.remove('active');
+            })
+        );
+
+        document.addEventListener('click', e => {
+            if (!menuHamburguer.contains(e.target) && !menuLinks.contains(e.target)) {
+                menuHamburguer.classList.remove('active');
+                menuLinks.classList.remove('active');
+            }
+        });
+    }
+}
+
+class ArtistCardsAnimationManager {
+    static initialize() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (window.innerWidth >= 768) {
+                    entry.target.classList.toggle('visible', entry.isIntersecting);
+                } else {
+                    entry.target.classList.add('visible');
+                }
+            });
+        });
+
+        document.querySelectorAll('.cartao-artista').forEach(card => observer.observe(card));
+    }
+}
+
+class ParticleSystem {
+    static async createParticles() {
+        const container = document.querySelector('.fundo-particulas');
+        if (!container) return;
+
+        try {
+            await new Promise(r => requestAnimationFrame(() => { 
+                container.innerHTML = ''; 
+                r(); 
+            }));
+
+            const quantity = window.innerWidth <= 768 ? CONFIG.particles.mobile : CONFIG.particles.desktop;
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < quantity; i++) {
+                const particle = this.createParticle();
+                fragment.appendChild(particle);
+            }
+
+            await new Promise(r => requestAnimationFrame(() => {
+                container.appendChild(fragment);
+                container.style.display = 'none'; 
+                container.offsetHeight; 
+                container.style.display = 'block';
+                r();
+            }));
+        } catch (error) {
+            console.warn('Erro ao criar partículas:', error);
+        }
+    }
+
+    static createParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'particula';
+        
+        const size = 1 + Math.random() * 2;
+        const duration = (window.innerWidth <= 768 ? 10 : 8) + Math.random() * 4;
+        
+        Object.assign(particle.style, {
+            left: `${Math.random() * 100}%`,
+            top: '100vh',
+            animationDelay: `${Math.random() * 8}s`,
+            animationDuration: `${duration}s`,
+            width: `${size}px`,
+            height: `${size}px`
+        });
+
+        return particle;
+    }
+
+    static startParticleSystem() {
+        this.createParticles();
+        setInterval(() => this.createParticles(), CONFIG.particles.recreateInterval);
+    }
 }
 
 class CarrosselDepoimentos {
@@ -235,51 +432,70 @@ class CarrosselDepoimentos {
         this.indicadores = document.querySelectorAll('.indicador');
         this.btnPrev = document.querySelector('.carrossel-btn-prev');
         this.btnNext = document.querySelector('.carrossel-btn-next');
-        this.threshold = 50;
+        this.threshold = CONFIG.carousel.swipeThreshold;
         this.isInteracting = false;
         this.autoPlayInterval = null;
         this.init();
     }
+
     init() {
         if (!this.totalSlides) return;
-        this.btnPrev?.addEventListener('click', () => this.slidePrev());
-        this.btnNext?.addEventListener('click', () => this.slideNext());
-        this.indicadores.forEach((ind, i) => ind.addEventListener('click', () => this.irPara(i)));
-        this.container?.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: true });
-        this.container?.addEventListener('touchmove', e => this.handleTouchMove(e), { passive: false });
-        this.container?.addEventListener('touchend', e => this.handleTouchEnd(e), { passive: true });
-        this.container?.addEventListener('mousedown', e => this.handleMouseDown(e));
-        this.container?.addEventListener('mousemove', e => this.handleMouseMove(e));
-        this.container?.addEventListener('mouseup', e => this.handleMouseUp(e));
-        this.container?.addEventListener('mouseleave', e => this.handleMouseUp(e));
-        this.container?.addEventListener('mouseenter', () => this.stopAutoPlay());
-        this.container?.addEventListener('mouseleave', () => !this.isInteracting && this.startAutoPlay());
-        this.container?.addEventListener('selectstart', e => e.preventDefault());
+        
+        this.setupEventListeners();
         this.startAutoPlay();
         this.atualizarSlide();
     }
-    irPara(i) {
-        if (i >= 0 && i < this.totalSlides) {
-            this.slideAtual = i;
+
+    setupEventListeners() {
+        this.btnPrev?.addEventListener('click', () => this.slidePrev());
+        this.btnNext?.addEventListener('click', () => this.slideNext());
+        
+        this.indicadores.forEach((ind, i) => 
+            ind.addEventListener('click', () => this.irPara(i))
+        );
+
+        if (!this.container) return;
+
+        this.container.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: true });
+        this.container.addEventListener('touchmove', e => this.handleTouchMove(e), { passive: false });
+        this.container.addEventListener('touchend', e => this.handleTouchEnd(e), { passive: true });
+        
+        this.container.addEventListener('mousedown', e => this.handleMouseDown(e));
+        this.container.addEventListener('mousemove', e => this.handleMouseMove(e));
+        this.container.addEventListener('mouseup', e => this.handleMouseUp(e));
+        this.container.addEventListener('mouseleave', e => this.handleMouseUp(e));
+        
+        this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.container.addEventListener('mouseleave', () => !this.isInteracting && this.startAutoPlay());
+        this.container.addEventListener('selectstart', e => e.preventDefault());
+    }
+
+    irPara(index) {
+        if (index >= 0 && index < this.totalSlides) {
+            this.slideAtual = index;
             this.atualizarSlide();
             this.resetAutoPlay();
         }
     }
+
     slideNext() {
         this.slideAtual = (this.slideAtual + 1) % this.totalSlides;
         this.atualizarSlide();
         this.resetAutoPlay();
     }
+
     slidePrev() {
         this.slideAtual = this.slideAtual === 0 ? this.totalSlides - 1 : this.slideAtual - 1;
         this.atualizarSlide();
         this.resetAutoPlay();
     }
+
     atualizarSlide() {
         this.track.style.transform = `translateX(${-this.slideAtual * 100}%)`;
         this.slides.forEach((s, i) => s.classList.toggle('active', i === this.slideAtual));
         this.indicadores.forEach((ind, i) => ind.classList.toggle('active', i === this.slideAtual));
     }
+
     handleTouchStart(e) {
         this.startX = e.touches[0].clientX;
         this.startY = e.touches[0].clientY;
@@ -287,10 +503,15 @@ class CarrosselDepoimentos {
         this.isHorizontalSwipe = false;
         this.stopAutoPlay();
     }
+
     handleTouchMove(e) {
         if (!this.startX || !this.startY) return;
-        const [currentX, currentY] = [e.touches[0].clientX, e.touches[0].clientY];
-        const [diffX, diffY] = [Math.abs(currentX - this.startX), Math.abs(currentY - this.startY)];
+        
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - this.startX);
+        const diffY = Math.abs(currentY - this.startY);
+        
         if (diffX > 10 || diffY > 10) {
             if (diffX > diffY) {
                 this.isHorizontalSwipe = true;
@@ -302,20 +523,19 @@ class CarrosselDepoimentos {
             }
         }
     }
+
     handleTouchEnd(e) {
         if (!this.isInteracting || !this.isHorizontalSwipe) {
-            this.isInteracting = false;
-            this.isHorizontalSwipe = false;
-            setTimeout(() => this.startAutoPlay(), 3000);
+            this.resetInteractionState();
             return;
         }
+        
         this.endX = e.changedTouches[0].clientX;
         this.endY = e.changedTouches[0].clientY;
         this.handleSwipe();
-        this.isInteracting = false;
-        this.isHorizontalSwipe = false;
-        setTimeout(() => this.startAutoPlay(), 3000);
+        this.resetInteractionState();
     }
+
     handleMouseDown(e) {
         this.startX = e.clientX;
         this.startY = e.clientY;
@@ -324,50 +544,103 @@ class CarrosselDepoimentos {
         this.container.style.cursor = 'grabbing';
         this.stopAutoPlay();
     }
+
     handleMouseMove(e) {
         if (!this.isInteracting) return;
         e.preventDefault();
     }
+
     handleMouseUp(e) {
         if (!this.isInteracting) return;
+        
         this.endX = e.clientX;
         this.endY = e.clientY;
         this.container.style.cursor = 'grab';
         this.handleSwipe();
-        this.isInteracting = false;
-        this.isHorizontalSwipe = false;
-        setTimeout(() => this.startAutoPlay(), 3000);
+        this.resetInteractionState();
     }
+
     handleSwipe() {
         const diffX = this.startX - this.endX;
         const diffY = Math.abs(this.startY - this.endY);
-        if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY)
+        
+        if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY) {
             diffX > 0 ? this.slideNext() : this.slidePrev();
+        }
     }
+
+    resetInteractionState() {
+        this.isInteracting = false;
+        this.isHorizontalSwipe = false;
+        setTimeout(() => this.startAutoPlay(), CONFIG.carousel.interactionDelay);
+    }
+
     startAutoPlay() {
         if (this.autoPlayInterval) return;
+        
         this.autoPlayInterval = setInterval(() => {
             if (!this.isInteracting) this.slideNext();
-        }, 6000);
+        }, CONFIG.carousel.autoPlayDelay);
     }
+
     stopAutoPlay() {
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
             this.autoPlayInterval = null;
         }
     }
+
     resetAutoPlay() {
         this.stopAutoPlay();
-        setTimeout(() => this.startAutoPlay(), 1000);
+        setTimeout(() => this.startAutoPlay(), CONFIG.carousel.resetDelay);
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        await criarParticulas();
-        setInterval(criarParticulas, 30000);
-        new CarrosselDepoimentos();
-    } catch {
-        try { new CarrosselDepoimentos(); } catch {}
+function abrirEmail() {
+    if (window.innerWidth > 768) {
+        window.open(
+            'https://mail.google.com/mail/?view=cm&fs=1&to=smpsybookings@gmail.com&su=Contato%20via%20Site%20S%26M%20PsyBookings',
+            '_blank'
+        );
+        return false;
     }
-});
+    return true;
+}
+
+class AppInitializer {
+    static async initialize() {
+        try {
+            window.addEventListener('load', () => ScrollManager.initializeScrollBehavior());
+            ScrollManager.handleScrollEvents();
+            ScrollManager.handleBeforeUnload();
+            ScrollManager.setupSmoothAnchorScrolling();
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    await Promise.allSettled([
+                        ScrollManager.setupLogoScrollToTop(),
+                        new VideoAutoplayManager().initialize(),
+                        ParticleSystem.startParticleSystem(),
+                        Promise.resolve(MobileMenuManager.initialize()),
+                        Promise.resolve(ArtistCardsAnimationManager.initialize()),
+                        Promise.resolve(new CarrosselDepoimentos())
+                    ]);
+
+                    await new Promise(r => requestAnimationFrame(() => {
+                        ScrollManager.handleExternalLinks();
+                        r();
+                    }));
+
+                } catch (error) {
+                    console.warn('Erro na inicialização:', error);
+                    try { new CarrosselDepoimentos(); } catch {}
+                }
+            });
+
+        } catch (error) {
+            console.error('Erro crítico na inicialização:', error);
+        }
+    }
+}
+
+AppInitializer.initialize();
