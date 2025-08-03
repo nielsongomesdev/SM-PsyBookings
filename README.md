@@ -2,7 +2,7 @@
 
 # 💿 S&M PsyBookings
 [🚀 Ver Demo Ao Vivo](https://sm-psybookings.com)
-**Conectando Artistas e Pistas** - Landing page para plataforma de bookings de artistas visionários da música eletrônica.
+ Landing page para plataforma de bookings de artistas da música eletrônica.
 
 ## Sobre
 

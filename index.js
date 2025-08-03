@@ -12,6 +12,7 @@ const CONFIG = {
     carousel: { swipeThreshold: 50, autoPlayDelay: 6000, resetDelay: 1000, interactionDelay: 3000 }
 };
 
+
 class ScrollManager {
     static async initializeScrollBehavior() {
         try {
@@ -112,6 +113,19 @@ class VideoAutoplayManager {
         this.setupEventListeners();
         this.attemptAutoplay();
         this.setupFallbackButton();
+        this.startLoopMonitoring();
+    }
+    startLoopMonitoring() {
+        setInterval(() => {
+            if (this.video && !this.video.paused && this.video.duration > 0) {
+                if (this.video.currentTime >= this.video.duration - 0.2) {
+                    this.video.currentTime = 0;
+                }
+                if (!this.video.loop) {
+                    this.video.loop = true;
+                }
+            }
+        }, 1000);
     }
     setupVideoAttributes() {
         Object.assign(this.video, {
@@ -126,6 +140,7 @@ class VideoAutoplayManager {
             if (++this.playAttempts > this.maxPlayAttempts) return false;
             this.video.muted = true;
             this.video.volume = 0;
+            this.video.loop = true;
             if (DeviceDetector.isIOS || DeviceDetector.isSafari) await new Promise(r => setTimeout(r, 100));
             await this.video.play();
             return !this.video.paused;
@@ -162,7 +177,13 @@ class VideoAutoplayManager {
             if (this.hasUserInteracted && !DeviceDetector.isLowPowerMode) setTimeout(() => this.forcePlay(), 100);
         });
         this.video.addEventListener('ended', () => {
-            if (this.video.loop) this.forcePlay();
+            this.video.currentTime = 0;
+            this.forcePlay();
+        });
+        this.video.addEventListener('timeupdate', () => {
+            if (this.video.duration > 0 && this.video.currentTime >= this.video.duration - 0.1) {
+                this.video.currentTime = 0;
+            }
         });
         new IntersectionObserver(entries => {
             entries.forEach(entry => {
@@ -213,6 +234,8 @@ class VideoAutoplayManager {
         btn.onmouseenter = () => btn.style.background = 'rgba(0,0,0,0.9)';
         btn.onmouseleave = () => btn.style.background = 'rgba(0,0,0,0.8)';
         btn.onclick = () => {
+            this.video.loop = true;
+            this.video.muted = true;
             this.video.play();
             btn.remove();
         };
@@ -256,6 +279,7 @@ class ArtistCardsAnimationManager {
         document.querySelectorAll('.cartao-artista').forEach(card => observer.observe(card));
     }
 }
+
 
 class ParticleSystem {
     static async createParticles() {
@@ -437,6 +461,7 @@ class CarrosselDepoimentos {
     }
 }
 
+
 function abrirEmail() {
     if (window.innerWidth > 768) {
         window.open(
@@ -472,5 +497,6 @@ class AppInitializer {
         } catch (e) {}
     }
 }
+
 
 AppInitializer.initialize();
