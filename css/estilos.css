@@ -309,7 +309,6 @@ main { margin-top: 0; margin-bottom: 0; }
   -webkit-animation: logoFloat 4s ease-in-out infinite !important;
   animation-fill-mode: both !important;
   -webkit-animation-fill-mode: both !important;
-  /* Forçar animação em todos os dispositivos */
   transform: translateY(0);
   will-change: transform;
 }
@@ -670,7 +669,6 @@ footer p {
   .subtitulo-principal p { font-size: 0.75rem; line-height: 1.4; white-space: normal; text-align: center; margin: 0; }
   .secao-abertura-logo-simbolo { 
     max-width: 150px; 
-    /* Garantir animação em tablets/mobile */
     animation: logoFloat 5s ease-in-out infinite !important;
     -webkit-animation: logoFloat 5s ease-in-out infinite !important;
   }
