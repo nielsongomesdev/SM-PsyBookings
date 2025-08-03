@@ -1,7 +1,7 @@
 ![Animação](https://github.com/user-attachments/assets/39234b4e-fffe-48c4-9c19-37c86029fbb3)
 
 # 💿 S&M PsyBookings
-
+[🚀 Ver Demo Ao Vivo](https://sm-psybookings.com)
 **Conectando Artistas e Pistas** - Landing page para plataforma de bookings de artistas visionários da música eletrônica.
 
 ## Sobre
@@ -28,8 +28,17 @@ Agência especializada em **psytrance** com foco em **retrofuturismo, identidade
 
 - **HTML5** - Estrutura semântica
 - **CSS3** - Flexbox, Grid, animações, backdrop filters
-- **JavaScript** - Carrossel, menu responsivo, partículas
+- **JavaScript ES6+** - Async/Await, Promises, Classes modernas
+- **Funções Assíncronas** - Autoplay inteligente, scroll otimizado, carregamento de partículas
+- **APIs Modernas** - IntersectionObserver, Performance API, SessionStorage
 - **Font Awesome** - Ícones
+
+
+### 🔧 **Benefícios das Funções Assíncronas**
+- ✅ **Performance**: Não bloqueia a interface do usuário
+- ✅ **Compatibilidade**: Fallbacks elegantes para todos navegadores  
+- ✅ **UX Otimizada**: Transições suaves e responsivas
+- ✅ **Código Moderno**: Padrões ES6+ com async/await
 
 ## 📁 Estrutura
 
