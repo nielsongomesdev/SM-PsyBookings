@@ -1,238 +1,111 @@
-window.addEventListener('load', async function() {
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isLowPowerMode = navigator.connection && navigator.connection.saveData;
+
+window.addEventListener('load', async () => {
     try {
         await new Promise(resolve => {
-            if (document.readyState === 'complete') {
-                resolve();
-            } else {
-                window.addEventListener('load', resolve, { once: true });
-            }
+            if (document.readyState === 'complete') resolve();
+            else window.addEventListener('load', resolve, { once: true });
         });
-
-        const navigation = performance.getEntriesByType('navigation')[0];
-        const isBackNavigation = navigation && navigation.type === 'back_forward';
-        const isReload = navigation && navigation.type === 'reload';
-        const isFirstVisit = !sessionStorage.getItem('hasVisited');
-        const comesFromExternal = !document.referrer || !document.referrer.includes(window.location.hostname);
-        const shouldScrollToTop = (isFirstVisit || comesFromExternal) && !isBackNavigation && !isReload;
-
-        if (shouldScrollToTop) {
-            await new Promise(resolve => {
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(resolve);
-                });
-            });
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        const nav = performance.getEntriesByType('navigation')[0];
+        const isBack = nav && nav.type === 'back_forward';
+        const isReload = nav && nav.type === 'reload';
+        const firstVisit = !sessionStorage.getItem('hasVisited');
+        const fromExternal = !document.referrer || !document.referrer.includes(location.hostname);
+        if ((firstVisit || fromExternal) && !isBack && !isReload) {
+            await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+            scrollTo({ top: 0, behavior: 'smooth' });
         }
         sessionStorage.setItem('hasVisited', 'true');
-    } catch (error) {
-        sessionStorage.setItem('hasVisited', 'true');
-    }
+    } catch {}
 });
 
 window.addEventListener('scroll', () => {
-    const barraNavegacao = document.querySelector('.barra-navegacao');
-    if (barraNavegacao) {
-        barraNavegacao.classList.toggle('scrolled', window.scrollY > 50);
-    }
+    document.querySelector('.barra-navegacao')?.classList.toggle('scrolled', scrollY > 50);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
     const video = document.querySelector('.secao-abertura-video');
     if (!video) return;
-
-    // Configurações críticas para autoplay cross-platform
-    video.muted = true;
-    video.autoplay = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.controls = false;
-    video.volume = 0;
-    video.defaultMuted = true;
-
-    // Atributos HTML5 para máxima compatibilidade
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('muted', '');
-    video.setAttribute('autoplay', '');
-    video.setAttribute('loop', '');
-    video.setAttribute('preload', 'metadata');
-    
-    // Configurações adicionais para iOS/Safari
-    video.setAttribute('x-webkit-airplay', 'deny');
-    video.setAttribute('disablepictureinpicture', '');
+    Object.assign(video, {
+        muted: true, autoplay: true, loop: true, playsInline: true, controls: false, volume: 0, defaultMuted: true
+    });
+    ['playsinline', 'webkit-playsinline', 'muted', 'autoplay', 'loop', 'preload', 'x-webkit-airplay', 'disablepictureinpicture'].forEach(attr =>
+        video.setAttribute(attr, attr === 'preload' ? 'metadata' : '')
+    );
     video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplaybook');
-
-    let hasUserInteracted = false;
-    let autoPlayAttempted = false;
-    let playAttempts = 0;
-    const maxPlayAttempts = 10;
-
-    // Detecção de dispositivo e navegador
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    const isAndroid = /Android/.test(navigator.userAgent);
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    const isLowPowerMode = navigator.connection && navigator.connection.saveData;
-
+    let hasUserInteracted = false, autoPlayAttempted = false, playAttempts = 0, maxPlayAttempts = 10;
     const forcePlay = async () => {
         try {
-            playAttempts++;
-            if (playAttempts > maxPlayAttempts) return false;
-
-            // Garante que está mudo
-            video.muted = true;
-            video.volume = 0;
-            
-            // Para iOS/Safari, aguarda um pouco antes de tentar
-            if (isIOS || isSafari) {
-                await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                await playPromise;
-            }
-            
+            if (++playAttempts > maxPlayAttempts) return false;
+            video.muted = true; video.volume = 0;
+            if (isIOS || isSafari) await new Promise(r => setTimeout(r, 100));
+            await video.play();
             return !video.paused;
-        } catch (error) {
-            // Em dispositivos móveis, especialmente iOS, autoplay pode falhar
-            if (isLowPowerMode || (isMobile && !hasUserInteracted)) {
-                return false;
-            }
-            
-            // Tenta novamente após um delay
-            if (playAttempts < maxPlayAttempts) {
-                setTimeout(() => forcePlay(), 500);
-            }
+        } catch {
+            if (isLowPowerMode || (isMobile && !hasUserInteracted)) return false;
+            if (playAttempts < maxPlayAttempts) setTimeout(forcePlay, 500);
             return false;
         }
     };
-
-    const handleFirstInteraction = async (event) => {
+    const handleFirstInteraction = async e => {
         if (hasUserInteracted) return;
         hasUserInteracted = true;
-        event.preventDefault();
-        event.stopPropagation();
-        const success = await forcePlay();
-        if (success) {
+        e.preventDefault(); e.stopPropagation();
+        if (await forcePlay()) {
             document.removeEventListener('touchstart', handleFirstInteraction, true);
             document.removeEventListener('click', handleFirstInteraction, true);
         }
     };
-
-    const captureAnyInteraction = (event) => {
+    const captureAnyInteraction = () => {
         if (!autoPlayAttempted) {
             autoPlayAttempted = true;
             forcePlay();
         }
     };
-
     document.addEventListener('touchstart', handleFirstInteraction, { capture: true, passive: false });
     document.addEventListener('click', handleFirstInteraction, { capture: true, passive: false });
-
-    ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown', 'mousedown', 'wheel', 'focus'].forEach(event => {
-        document.addEventListener(event, captureAnyInteraction, { once: true, passive: true });
-    });
-
-    const attemptAutoplay = async () => {
-        // Estratégia escalonada de tentativas
-        const delays = [0, 100, 300, 500, 1000, 2000];
-        
-        for (let i = 0; i < delays.length; i++) {
+    ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown', 'mousedown', 'wheel', 'focus']
+        .forEach(ev => document.addEventListener(ev, captureAnyInteraction, { once: true, passive: true }));
+    const attemptAutoplay = () => {
+        [0, 100, 300, 500, 1000, 2000].forEach(delay =>
             setTimeout(async () => {
-                if (!hasUserInteracted && video.paused && playAttempts < maxPlayAttempts) {
-                    const success = await forcePlay();
-                    if (success) return;
-                }
-            }, delays[i]);
-        }
-        
-        // Tentativa final após carregamento completo
-        if (video.readyState >= 2) {
-            setTimeout(async () => {
-                if (video.paused && !hasUserInteracted) {
-                    await forcePlay();
-                }
-            }, 3000);
-        }
+                if (!hasUserInteracted && video.paused && playAttempts < maxPlayAttempts) await forcePlay();
+            }, delay)
+        );
+        if (video.readyState >= 2) setTimeout(() => { if (video.paused && !hasUserInteracted) forcePlay(); }, 3000);
     };
-
-    // Listeners de carregamento otimizados por dispositivo
-    video.addEventListener('loadstart', () => {
-        if (!isMobile || hasUserInteracted) forcePlay();
-    });
-    
-    video.addEventListener('loadedmetadata', () => {
-        if (!isLowPowerMode) forcePlay();
-    });
-    
-    video.addEventListener('loadeddata', forcePlay);
-    video.addEventListener('canplay', forcePlay);
-    video.addEventListener('canplaythrough', forcePlay);
-
-    video.addEventListener('pause', () => {
-        if (hasUserInteracted && !isLowPowerMode) {
-            setTimeout(forcePlay, 100);
-        }
-    });
-
-    video.addEventListener('ended', () => {
-        if (video.loop) forcePlay();
-    });
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && video.paused) {
-                forcePlay();
-            }
-        });
-    }, { threshold: 0.5 });
-    observer.observe(video);
-
+    ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough'].forEach(ev =>
+        video.addEventListener(ev, forcePlay)
+    );
+    video.addEventListener('pause', () => { if (hasUserInteracted && !isLowPowerMode) setTimeout(forcePlay, 100); });
+    video.addEventListener('ended', () => { if (video.loop) forcePlay(); });
+    new IntersectionObserver(entries => {
+        entries.forEach(entry => { if (entry.isIntersecting && video.paused) forcePlay(); });
+    }, { threshold: 0.5 }).observe(video);
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && video.paused && hasUserInteracted) {
-            forcePlay();
-        }
+        if (!document.hidden && video.paused && hasUserInteracted) forcePlay();
     });
-
     attemptAutoplay();
-
-    setTimeout(() => {
-        if (video.paused && !hasUserInteracted) {
-            hasUserInteracted = true;
-            forcePlay();
-        }
-    }, 3000);
-
-    // Verificação final para dispositivos problemáticos
+    setTimeout(() => { if (video.paused && !hasUserInteracted) { hasUserInteracted = true; forcePlay(); } }, 3000);
     setTimeout(() => {
         if (video.paused && video.readyState >= 2) {
-            // Última tentativa sem aguardar interação
             video.muted = true;
             video.play().catch(() => {
-                // Se ainda assim falhar, mostra um indicador visual
-                const playButton = document.createElement('button');
-                playButton.innerHTML = '▶️ Clique para reproduzir o vídeo';
-                playButton.style.cssText = `
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    z-index: 10;
-                    background: rgba(0,0,0,0.8);
-                    color: white;
-                    border: none;
-                    padding: 15px 25px;
-                    border-radius: 25px;
-                    font-size: 16px;
-                    cursor: pointer;
-                `;
-                playButton.onclick = () => {
-                    video.play();
-                    playButton.remove();
-                };
-                video.parentElement.style.position = 'relative';
-                video.parentElement.appendChild(playButton);
+                if (!isMobile) {
+                    const btn = document.createElement('button');
+                    btn.innerHTML = 'Clique para reproduzir o vídeo';
+                    btn.style.cssText = `
+                        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        z-index: 10; background: rgba(0,0,0,0.8); color: white; border: none;
+                        padding: 15px 25px; border-radius: 25px; font-size: 16px; cursor: pointer;
+                    `;
+                    btn.onclick = () => { video.play(); btn.remove(); };
+                    video.parentElement.style.position = 'relative';
+                    video.parentElement.appendChild(btn);
+                }
             });
         }
     }, 5000);
@@ -240,19 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const menuHamburguer = document.querySelector('.menu-hamburguer');
 const menuLinks = document.querySelector('.barra-navegacao-menu');
-
 menuHamburguer?.addEventListener('click', () => {
     menuHamburguer.classList.toggle('active');
     menuLinks?.classList.toggle('active');
 });
-
-document.querySelectorAll('.barra-navegacao-menu a').forEach(link => {
+document.querySelectorAll('.barra-navegacao-menu a').forEach(link =>
     link.addEventListener('click', () => {
         menuHamburguer?.classList.remove('active');
         menuLinks?.classList.remove('active');
-    });
-});
-
+    })
+);
 document.addEventListener('click', e => {
     if (!menuHamburguer?.contains(e.target) && !menuLinks?.contains(e.target)) {
         menuHamburguer?.classList.remove('active');
@@ -262,11 +132,10 @@ document.addEventListener('click', e => {
 
 const observador = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-        if (window.innerWidth >= 768) {
+        if (innerWidth >= 768)
             entry.target.classList.toggle('visible', entry.isIntersecting);
-        } else {
+        else
             entry.target.classList.add('visible');
-        }
     });
 });
 document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(card));
@@ -274,51 +143,33 @@ document.querySelectorAll('.cartao-artista').forEach(card => observador.observe(
 async function criarParticulas() {
     const container = document.querySelector('.fundo-particulas');
     if (!container) return;
-
     try {
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-                container.innerHTML = '';
-                resolve();
-            });
-        });
-
-        const isMobile = window.innerWidth <= 768;
-        const quantidadeParticulas = isMobile ? 8 : 12;
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 0; i < quantidadeParticulas; i++) {
-            const particula = document.createElement('div');
-            particula.className = 'particula';
-            particula.style.left = `${Math.random() * 100}%`;
-            particula.style.top = `100vh`;
-            particula.style.animationDelay = `${Math.random() * 8}s`;
-            const duracao = isMobile ? 10 + Math.random() * 4 : 8 + Math.random() * 4;
-            particula.style.animationDuration = `${duracao}s`;
-            const tamanho = 1 + Math.random() * 2;
-            particula.style.width = `${tamanho}px`;
-            particula.style.height = `${tamanho}px`;
-            fragment.appendChild(particula);
+        await new Promise(r => requestAnimationFrame(() => { container.innerHTML = ''; r(); }));
+        const qtd = innerWidth <= 768 ? 8 : 12;
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < qtd; i++) {
+            const p = document.createElement('div');
+            p.className = 'particula';
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.top = `100vh`;
+            p.style.animationDelay = `${Math.random() * 8}s`;
+            p.style.animationDuration = `${(innerWidth <= 768 ? 10 : 8) + Math.random() * 4}s`;
+            const t = 1 + Math.random() * 2;
+            p.style.width = `${t}px`; p.style.height = `${t}px`;
+            frag.appendChild(p);
         }
-
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-                container.appendChild(fragment);
-                container.style.display = 'none';
-                container.offsetHeight;
-                container.style.display = 'block';
-                resolve();
-            });
-        });
-
-    } catch (error) {}
+        await new Promise(r => requestAnimationFrame(() => {
+            container.appendChild(frag);
+            container.style.display = 'none'; container.offsetHeight; container.style.display = 'block';
+            r();
+        }));
+    } catch {}
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 });
 
@@ -326,55 +177,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const logo = document.querySelector('.barra-navegacao-logo');
         if (logo) {
-            logo.addEventListener('click', async (e) => {
+            logo.addEventListener('click', async e => {
                 e.preventDefault();
                 await new Promise(resolve => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    const checkScroll = () => {
-                        if (window.scrollY <= 5) {
-                            resolve();
-                        } else {
-                            requestAnimationFrame(checkScroll);
-                        }
-                    };
-                    checkScroll();
+                    scrollTo({ top: 0, behavior: 'smooth' });
+                    (function check() {
+                        if (scrollY <= 5) resolve();
+                        else requestAnimationFrame(check);
+                    })();
                 });
             });
             logo.style.cursor = 'pointer';
         }
-
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-                const externalLinks = document.querySelectorAll('a[target="_blank"], a[href^="http"], a[href^="mailto"]');
-                externalLinks.forEach(link => {
-                    link.addEventListener('click', async () => {
-                        try {
-                            sessionStorage.setItem('scrollPosition', window.scrollY.toString());
-                            sessionStorage.setItem('clickedExternalLink', 'true');
-                            await new Promise(resolve => setTimeout(resolve, 10));
-                        } catch (error) {}
-                    });
-                });
-                resolve();
-            });
-        });
-
-    } catch (error) {}
+        await new Promise(r => requestAnimationFrame(() => {
+            document.querySelectorAll('a[target="_blank"], a[href^="http"], a[href^="mailto"]').forEach(link =>
+                link.addEventListener('click', async () => {
+                    try {
+                        sessionStorage.setItem('scrollPosition', scrollY.toString());
+                        sessionStorage.setItem('clickedExternalLink', 'true');
+                        await new Promise(r2 => setTimeout(r2, 10));
+                    } catch {}
+                })
+            );
+            r();
+        }));
+    } catch {}
 });
 
 window.addEventListener('focus', async () => {
     try {
-        const clickedExternal = sessionStorage.getItem('clickedExternalLink');
-        if (clickedExternal) {
+        if (sessionStorage.getItem('clickedExternalLink')) {
             sessionStorage.removeItem('clickedExternalLink');
-            await new Promise(resolve => requestAnimationFrame(resolve));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            await new Promise(r => requestAnimationFrame(r));
+            scrollTo({ top: 0, behavior: 'smooth' });
         }
-    } catch (error) {}
+    } catch {}
 });
 
 function abrirEmail() {
-    if (window.innerWidth > 768) {
+    if (innerWidth > 768) {
         window.open(
             'https://mail.google.com/mail/?view=cm&fs=1&to=smpsybookings@gmail.com&su=Contato%20via%20Site%20S%26M%20PsyBookings',
             '_blank'
@@ -394,24 +235,16 @@ class CarrosselDepoimentos {
         this.indicadores = document.querySelectorAll('.indicador');
         this.btnPrev = document.querySelector('.carrossel-btn-prev');
         this.btnNext = document.querySelector('.carrossel-btn-next');
-        this.startX = 0;
-        this.startY = 0;
-        this.endX = 0;
-        this.endY = 0;
         this.threshold = 50;
         this.isInteracting = false;
         this.autoPlayInterval = null;
-        this.isHorizontalSwipe = false;
         this.init();
     }
-
     init() {
         if (!this.totalSlides) return;
         this.btnPrev?.addEventListener('click', () => this.slidePrev());
         this.btnNext?.addEventListener('click', () => this.slideNext());
-        this.indicadores.forEach((indicador, i) =>
-            indicador.addEventListener('click', () => this.irPara(i))
-        );
+        this.indicadores.forEach((ind, i) => ind.addEventListener('click', () => this.irPara(i)));
         this.container?.addEventListener('touchstart', e => this.handleTouchStart(e), { passive: true });
         this.container?.addEventListener('touchmove', e => this.handleTouchMove(e), { passive: false });
         this.container?.addEventListener('touchend', e => this.handleTouchEnd(e), { passive: true });
@@ -425,7 +258,6 @@ class CarrosselDepoimentos {
         this.startAutoPlay();
         this.atualizarSlide();
     }
-
     irPara(i) {
         if (i >= 0 && i < this.totalSlides) {
             this.slideAtual = i;
@@ -433,25 +265,21 @@ class CarrosselDepoimentos {
             this.resetAutoPlay();
         }
     }
-
     slideNext() {
         this.slideAtual = (this.slideAtual + 1) % this.totalSlides;
         this.atualizarSlide();
         this.resetAutoPlay();
     }
-
     slidePrev() {
         this.slideAtual = this.slideAtual === 0 ? this.totalSlides - 1 : this.slideAtual - 1;
         this.atualizarSlide();
         this.resetAutoPlay();
     }
-
     atualizarSlide() {
         this.track.style.transform = `translateX(${-this.slideAtual * 100}%)`;
-        this.slides.forEach((slide, i) => slide.classList.toggle('active', i === this.slideAtual));
-        this.indicadores.forEach((indicador, i) => indicador.classList.toggle('active', i === this.slideAtual));
+        this.slides.forEach((s, i) => s.classList.toggle('active', i === this.slideAtual));
+        this.indicadores.forEach((ind, i) => ind.classList.toggle('active', i === this.slideAtual));
     }
-
     handleTouchStart(e) {
         this.startX = e.touches[0].clientX;
         this.startY = e.touches[0].clientY;
@@ -459,13 +287,10 @@ class CarrosselDepoimentos {
         this.isHorizontalSwipe = false;
         this.stopAutoPlay();
     }
-
     handleTouchMove(e) {
         if (!this.startX || !this.startY) return;
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-        const diffX = Math.abs(currentX - this.startX);
-        const diffY = Math.abs(currentY - this.startY);
+        const [currentX, currentY] = [e.touches[0].clientX, e.touches[0].clientY];
+        const [diffX, diffY] = [Math.abs(currentX - this.startX), Math.abs(currentY - this.startY)];
         if (diffX > 10 || diffY > 10) {
             if (diffX > diffY) {
                 this.isHorizontalSwipe = true;
@@ -477,7 +302,6 @@ class CarrosselDepoimentos {
             }
         }
     }
-
     handleTouchEnd(e) {
         if (!this.isInteracting || !this.isHorizontalSwipe) {
             this.isInteracting = false;
@@ -492,7 +316,6 @@ class CarrosselDepoimentos {
         this.isHorizontalSwipe = false;
         setTimeout(() => this.startAutoPlay(), 3000);
     }
-
     handleMouseDown(e) {
         this.startX = e.clientX;
         this.startY = e.clientY;
@@ -501,12 +324,10 @@ class CarrosselDepoimentos {
         this.container.style.cursor = 'grabbing';
         this.stopAutoPlay();
     }
-
     handleMouseMove(e) {
         if (!this.isInteracting) return;
         e.preventDefault();
     }
-
     handleMouseUp(e) {
         if (!this.isInteracting) return;
         this.endX = e.clientX;
@@ -517,29 +338,24 @@ class CarrosselDepoimentos {
         this.isHorizontalSwipe = false;
         setTimeout(() => this.startAutoPlay(), 3000);
     }
-
     handleSwipe() {
         const diffX = this.startX - this.endX;
         const diffY = Math.abs(this.startY - this.endY);
-        if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY) {
+        if (Math.abs(diffX) > this.threshold && Math.abs(diffX) > diffY)
             diffX > 0 ? this.slideNext() : this.slidePrev();
-        }
     }
-
     startAutoPlay() {
         if (this.autoPlayInterval) return;
         this.autoPlayInterval = setInterval(() => {
             if (!this.isInteracting) this.slideNext();
         }, 6000);
     }
-
     stopAutoPlay() {
         if (this.autoPlayInterval) {
             clearInterval(this.autoPlayInterval);
             this.autoPlayInterval = null;
         }
     }
-
     resetAutoPlay() {
         this.stopAutoPlay();
         setTimeout(() => this.startAutoPlay(), 1000);
@@ -549,15 +365,9 @@ class CarrosselDepoimentos {
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await criarParticulas();
-        setInterval(async () => {
-            try {
-                await criarParticulas();
-            } catch (error) {}
-        }, 30000);
+        setInterval(criarParticulas, 30000);
         new CarrosselDepoimentos();
-    } catch (error) {
-        try {
-            new CarrosselDepoimentos();
-        } catch (fallbackError) {}
+    } catch {
+        try { new CarrosselDepoimentos(); } catch {}
     }
 });
