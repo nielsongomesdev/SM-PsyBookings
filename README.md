@@ -1,8 +1,9 @@
 ![Animação](https://github.com/user-attachments/assets/39234b4e-fffe-48c4-9c19-37c86029fbb3)
 
 # 💿 S&M PsyBookings
-[ Ver Demo Ao Vivo](https://sm-psybookings.com)
- Landing page para plataforma de bookings de artistas da música eletrônica.
+https://sm-psybookings.com
+
+Landing page para plataforma de bookings de artistas da música eletrônica.
 
 ## Características
 
