@@ -1,15 +1,18 @@
+@import url('variables.css');
 @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Poppins:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap");
 
-html {
-    scroll-behavior: smooth;
-}
 
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: var(--fonte-principal);
   background: var(--fundo-body);
   color: var(--cor-texto);
+  -webkit-overflow-scrolling: touch;
 }
+
 body::before {
   content: "";
   position: fixed;
@@ -21,6 +24,7 @@ body::before {
   z-index: -1;
   pointer-events: none;
 }
+
 main { margin-top: 0; margin-bottom: 0; }
 .conteudo-central { width: 90%; max-width: 1200px; margin: 0 auto; }
 .desktop-only { display: block; }
@@ -44,7 +48,6 @@ main { margin-top: 0; margin-bottom: 0; }
   animation-duration: 10s;
   background: linear-gradient(45deg, var(--cor-primaria-hover), color-mix(in srgb, var(--cor-preto-3) 60%, var(--cor-primaria) 40%));
 }
-
 .barra-navegacao {
   position: fixed; top: 0; left: 0; width: 100%; padding: 15px 0; z-index: var(--z-navbar);
   transition: var(--transicao-normal);
@@ -108,16 +111,8 @@ main { margin-top: 0; margin-bottom: 0; }
   border: 2px solid rgba(199,146,234,0.3); transition: var(--transicao-rapida);
   display: block; text-align: center; min-width: 250px; position: relative; overflow: hidden;
 }
-.barra-navegacao-menu a::before {
-  content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s var(--easing-suave);
-}
-.barra-navegacao-menu a:hover::before { left: 100%; }
 .barra-navegacao-menu a:hover {
-  color: var(--cor-primaria); background: rgba(199,146,234,0.2);
-  border: var(--borda-hover); transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(199,146,234,0.3);
+  color: var(--cor-primaria);
 }
 .menu-hamburguer {
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -129,7 +124,7 @@ main { margin-top: 0; margin-bottom: 0; }
 }
 .menu-hamburguer:hover {
   background: var(--gradiente-hover-ativo);
-  transform: scale(1.05); 
+  transform: translateY(-50%) scale(1.05);
   border: var(--borda-hover);
   box-shadow: 0 6px 20px rgba(199,146,234,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
@@ -141,7 +136,7 @@ main { margin-top: 0; margin-bottom: 0; }
 }
 .menu-hamburguer.active {
   background: var(--gradiente-hover-ativo);
-  transform: scale(1.05); 
+  transform: translateY(-50%) scale(1.05);
   border-color: rgba(199,146,234,0.5);
   box-shadow: 0 6px 20px rgba(199,146,234,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
 }
@@ -151,37 +146,17 @@ main { margin-top: 0; margin-bottom: 0; }
 .menu-hamburguer.active span:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
 .menu-hamburguer.active span:nth-child(2) { opacity: 0; transform: scale(0) rotate(180deg); }
 .menu-hamburguer.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
-
-.secao-abertura { 
+.secao-abertura {
   position: relative; overflow-x: hidden; margin-bottom: 0; padding-bottom: 0;
   background: linear-gradient(rgba(18,18,18,0.8), rgba(199,146,234,0.15), rgba(18,18,18,0.85)), url('../assets/imagem-1.png');
   background-size: cover; background-position: center; min-height: 100vh;
 }
-@media (max-width: 768px) {
-  .secao-abertura {
-    background-attachment: scroll;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-image: linear-gradient(rgba(18,18,18,0.8), rgba(199,146,234,0.15), rgba(18,18,18,0.85)), url('../assets/imagem-1.png');
-  }
+.secao-abertura-video {
+  width: 100%; height: auto; display: block; filter: brightness(0.5); object-fit: cover;
+  min-height: 100vh; position: relative; z-index: 1; pointer-events: auto;
+  -webkit-appearance: none; appearance: none;
+  -webkit-controls: none; -moz-controls: none;
 }
-.secao-abertura-video { 
-  width: 100%;
-  height: auto;
-  display: block;
-  filter: brightness(0.5);
-  object-fit: cover;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
-  -webkit-appearance: none;
-  appearance: none;
-  -webkit-controls: none;
-  -moz-controls: none;
-}
-
 .secao-abertura-video::-webkit-media-controls,
 .secao-abertura-video::-webkit-media-controls-panel,
 .secao-abertura-video::-webkit-media-controls-play-button,
@@ -199,12 +174,9 @@ main { margin-top: 0; margin-bottom: 0; }
   -webkit-appearance: none;
   appearance: none;
 }
-
 .secao-abertura-video:not([autoplay]) {
   background-image: url('../assets/imagem-1.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
 }
 .secao-abertura-conteudo {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
@@ -214,7 +186,7 @@ main { margin-top: 0; margin-bottom: 0; }
   text-align: center; box-sizing: border-box;
 }
 .secao-abertura-logo-simbolo {
-  max-width: 180px; margin-bottom: 25px; opacity: 0.2;   
+  max-width: 250px; margin-bottom: 25px; opacity: 0.2;
   animation: logoFloat 4s ease-in-out infinite !important;
   -webkit-animation: logoFloat 4s ease-in-out infinite !important;
   animation-fill-mode: both !important;
@@ -223,11 +195,11 @@ main { margin-top: 0; margin-bottom: 0; }
   will-change: transform;
 }
 .secao-abertura-logotipo {
-  max-width: 280px; margin-bottom: 35px;
+  max-width: 380px; margin-bottom: 35px;
   filter: drop-shadow(0 5px 15px rgba(0,0,0,0.7));
 }
 .titulo-principal {
-  font-family: var(--fonte-display); font-size: 1.1rem; font-weight: 700;
+  font-family: var(--fonte-display); font-size: 1.4rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.5px; color: var(--cor-texto-branco);
   margin-bottom: 25px; text-shadow: 0 0 15px var(--cor-primaria), 0 0 25px var(--cor-primaria), 2px 2px 10px rgba(0,0,0,0.9);
   max-width: 100%; line-height: 1.4; animation: textGlow 3s ease-in-out infinite alternate;
@@ -262,20 +234,11 @@ main { margin-top: 0; margin-bottom: 0; }
   transform: translateY(-1px) scale(1.02);
   box-shadow: 0 15px 25px rgba(199,146,234,0.4);
 }
-
 .secao-sobre {
   padding: var(--espacamento-secao) 0 var(--espacamento-secao) 0; margin-top: -80px; text-align: center; position: relative;
   background: var(--gradiente-secao), url("../assets/imagem-1.png");
   background-size: cover; background-position: center; background-attachment: fixed;
   border-bottom: 2px solid rgba(199,146,234,0.3); overflow: hidden; z-index: var(--espacamento-sm);
-}
-@media (max-width: 768px) {
-  .secao-sobre {
-    background-attachment: scroll;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
 }
 .secao-sobre::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -312,14 +275,13 @@ main { margin-top: 0; margin-bottom: 0; }
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   font-weight: 700; animation: retroGlow 2s ease-in-out infinite alternate;
 }
-
 .secao-artistas {
   padding: var(--espacamento-secao) 0; background: var(--fundo-body); position: relative; overflow: hidden;
 }
 .secao-artistas::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(45deg, transparent 49%, rgba(199,146,234,0.015) 50%, transparent 51%),
-    linear-gradient(-45deg, transparent 49%, rgba(139,95,191,0.015) 50%, transparent 51%);
+              linear-gradient(-45deg, transparent 49%, rgba(139,95,191,0.015) 50%, transparent 51%);
   background-size: 80px 80px; animation: gridMove 15s linear infinite; z-index: var(--z-particulas);
 }
 .secao-artistas .conteudo-central { position: relative; z-index: var(--z-conteudo); }
@@ -360,25 +322,13 @@ main { margin-top: 0; margin-bottom: 0; }
   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .cartao-artista-links {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--espacamento-sm);
 }
-
-.cartao-artista:nth-child(1) .cartao-artista-links {
-  gap: 15px;
-}
-
+.cartao-artista:nth-child(1) .cartao-artista-links { gap: 15px; }
 .cartao-artista:nth-child(2) .cartao-artista-links,
-.cartao-artista:nth-child(4) .cartao-artista-links {
-  padding-top: 50px;
-}
-
-.cartao-artista:nth-child(3) .cartao-artista-links {
-  padding-bottom: 15px;
-}
+.cartao-artista:nth-child(4) .cartao-artista-links { padding-top: 50px; }
+.cartao-artista:nth-child(3) .cartao-artista-links { padding-top: 35px; }
 .link-social {
   color: var(--cor-primaria); text-decoration: none; font-size: var(--fonte-sm); font-weight: 600;
   transition: var(--transicao-rapida); display: inline-flex; align-items: center; gap: 8px;
@@ -402,20 +352,11 @@ main { margin-top: 0; margin-bottom: 0; }
 .cartao-artista:nth-child(4) .cartao-artista-imagem img {
   object-fit: cover; object-position: center 35%; background-color: var(--cor-cinza-3);
 }
-
 .secao-representante {
   padding: 100px 0; text-align: center; position: relative;
   background: linear-gradient(135deg, rgba(18,18,18,0.95), color-mix(in srgb, var(--cor-preto-2) 90%, transparent)), url("../assets/imagem-5.png");
   background-size: cover; background-position: center; background-attachment: fixed;
   border-top: 1px solid rgba(199,146,234,0.3);
-}
-@media (max-width: 768px) {
-  .secao-representante {
-    background-attachment: scroll;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
 }
 .secao-representante::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -444,35 +385,11 @@ main { margin-top: 0; margin-bottom: 0; }
   text-decoration: none; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s var(--easing-suave);
 }
 .representante-nome:hover { color: var(--cor-primaria); text-shadow: 0 0 10px rgba(199,146,234,0.6); }
-@media (max-width: 768px) {
-  .secao-representante { padding: 60px 20px; }
-  .secao-representante h2 { font-size: 1rem; margin-bottom: 40px; }
-  .representantes-container { gap: 5px; }
-  .representante-item { padding: 10px 0; max-width: 280px; margin: 0; }
-  .representante-logo { height: 35px; }
-  .representante-nome { font-size: 0.9rem; letter-spacing: 0.5px; }
-}
-@media (max-width: 480px) {
-  .secao-representante { padding: 40px 15px; }
-  .secao-representante h2 { font-size: 1rem; margin-bottom: 30px; }
-  .representante-item { max-width: 250px; padding: 8px 0; }
-  .representante-logo { height: 30px; }
-  .representante-nome { font-size: 0.8rem; }
-}
-
 .secao-contato {
   padding: var(--espacamento-secao) 0; text-align: center; position: relative;
   background: var(--gradiente-secao), url("../assets/imagem-2.png");
   background-size: cover; background-position: center; background-attachment: fixed;
   border-top: var(--borda-primaria);
-}
-@media (max-width: 768px) {
-  .secao-contato {
-    background-attachment: scroll;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
 }
 .secao-contato::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -490,7 +407,6 @@ main { margin-top: 0; margin-bottom: 0; }
   font-size: var(--fonte-md); color: #f0f0f0; margin-bottom: 35px; max-width: 500px;
   margin-left: auto; margin-right: auto; text-shadow: 0 2px 4px rgba(0,0,0,0.7); font-weight: 400;
 }
-
 footer {
   background: linear-gradient(135deg, var(--cor-preto-1), var(--cor-cinza-1), var(--cor-preto-1));
   padding: var(--espacamento-md) 0 15px; text-align: center; border-top: 2px solid rgba(199,146,234,0.3);
@@ -505,7 +421,7 @@ footer .rodape-links-sociais, footer p { position: relative; z-index: var(--z-co
 .rodape-links-sociais { margin-bottom: var(--espacamento-sm); }
 .rodape-links-sociais a {
   color: var(--cor-primaria); font-size: 1.6rem; margin: 0 var(--espacamento-sm); transition: var(--transicao-normal);
-  display: inline-block; padding: var(--espacamento-sm); 
+  display: inline-block; padding: var(--espacamento-sm);
   position: relative;
 }
 .rodape-links-sociais a:hover {
@@ -516,7 +432,6 @@ footer p {
   color: var(--cor-texto-footer); font-size: 0.9rem; font-weight: 300;
   text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
-
 .equipe-depoimentos {
   margin-top: var(--espacamento-xl); padding: 0 var(--espacamento-md); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;
 }
@@ -593,6 +508,22 @@ footer p {
 .indicador.active { border-color: var(--cor-primaria); box-shadow: 0 0 15px rgba(199,146,234,0.5); }
 .indicador.active::before { transform: translate(-50%, -50%) scale(1); }
 .indicador:hover { border-color: var(--cor-primaria-hover); transform: scale(1.3); box-shadow: 0 0 10px rgba(199,146,234,0.4); }
+.cartao-artista:nth-child(1).visible { animation: slideInUp 0.6s ease-out 0.1s both; }
+.cartao-artista:nth-child(2).visible { animation: slideInUp 0.6s ease-out 0.2s both; }
+.cartao-artista:nth-child(3).visible { animation: slideInUp 0.6s ease-out 0.3s both; }
+.cartao-artista:nth-child(4).visible { animation: slideInUp 0.6s ease-out 0.4s both; }
+.secao-abertura-imagem-mobile {
+  width: 100%; height: 100vh;
+  background-image: url('../assets/imagem-1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
 
 @keyframes particleFloat {
   0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; }
@@ -600,11 +531,11 @@ footer p {
   100% { transform: translateY(-100vh) scale(1) rotate(360deg); opacity: 0; }
 }
 @keyframes logoFloat {
-  0%, 100% { 
+  0%, 100% {
     transform: translateY(0px);
     -webkit-transform: translateY(0px);
   }
-  50% { 
+  50% {
     transform: translateY(-10px);
     -webkit-transform: translateY(-10px);
   }
@@ -622,12 +553,8 @@ footer p {
   50% { transform: scale(1.02); }
 }
 @keyframes textGlow {
-  0% {
-    text-shadow: 0 0 10px rgba(199,146,234,0.8), 0 0 20px rgba(199,146,234,0.6), 0 0 30px rgba(199,146,234,0.4), 2px 2px 10px rgba(0,0,0,0.8);
-  }
-  100% {
-    text-shadow: 0 0 15px rgba(199,146,234,1), 0 0 25px rgba(199,146,234,0.8), 0 0 35px rgba(199,146,234,0.6), 2px 2px 10px rgba(0,0,0,0.8);
-  }
+  0% { text-shadow: 0 0 10px rgba(199,146,234,0.8), 0 0 20px rgba(199,146,234,0.6), 0 0 30px rgba(199,146,234,0.4), 2px 2px 10px rgba(0,0,0,0.8); }
+  100% { text-shadow: 0 0 15px rgba(199,146,234,1), 0 0 25px rgba(199,146,234,0.8), 0 0 35px rgba(199,146,234,0.6), 2px 2px 10px rgba(0,0,0,0.8); }
 }
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
@@ -643,18 +570,131 @@ footer p {
   50% { box-shadow: var(--sombra-neon-ativa); }
 }
 
-.cartao-artista:nth-child(1).visible { animation: slideInUp 0.6s ease-out 0.1s both; }
-.cartao-artista:nth-child(2).visible { animation: slideInUp 0.6s ease-out 0.2s both; }
-.cartao-artista:nth-child(3).visible { animation: slideInUp 0.6s ease-out 0.3s both; }
-.cartao-artista:nth-child(4).visible { animation: slideInUp 0.6s ease-out 0.4s both; }
+@media (min-width: 1400px) {
+  .titulo-principal { font-size: var(--fonte-titulo); letter-spacing: 3px; }
+}
+
+@media (min-width: 1200px) {
+  .titulo-principal { font-size: 2.9rem; letter-spacing: 2px; }
+  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 3rem; }
+  .grade-artistas { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 25px; }
+  .secao-abertura-logo-simbolo { max-width: 420px; }
+  .secao-abertura-logotipo { max-width: 600px; }
+  .barra-navegacao-logo { height: 70px; }
+  .barra-navegacao.scrolled .barra-navegacao-logo { height: 65px; }
+  .barra-navegacao-menu { gap: 30px; }
+  .cartao-artista-info h3 { font-size: 1.3rem; letter-spacing: 0.5px; white-space: normal; overflow: visible; text-overflow: unset; }
+}
+
+@media (min-width: 1024px) {
+  .titulo-principal { font-size: 2.5rem; letter-spacing: 1.5px; }
+  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 2.6rem; }
+  .secao-abertura-logo-simbolo { max-width: 350px; }
+  .secao-abertura-logotipo { max-width: 520px; }
+  .barra-navegacao-logo { height: 65px; }
+  .barra-navegacao.scrolled .barra-navegacao-logo { height: 60px; }
+  .barra-navegacao-menu { gap: 25px; }
+  .barra-navegacao-menu a { font-size: 0.9rem; padding: 10px 18px; }
+  .grade-artistas { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .cartao-artista-info h3 { font-size: 1.2rem; letter-spacing: 0.2px; white-space: normal; overflow: visible; text-overflow: unset; }
+}
+
+@media (min-width: 768px) {
+  .menu-hamburguer { display: none; }
+  .barra-navegacao-logo { height: 60px; }
+  .barra-navegacao.scrolled .barra-navegacao-logo { height: 55px; }
+  .barra-navegacao-menu {
+    display: flex !important; position: static; width: auto; height: auto; background: none;
+    backdrop-filter: none; -webkit-backdrop-filter: none; flex-direction: row; justify-content: flex-end;
+    align-items: center; list-style: none; z-index: auto; opacity: 1; visibility: visible; transition: none;
+    gap: 15px; flex-wrap: nowrap;
+  }
+  .barra-navegacao-menu li { margin: 0; transform: none; opacity: 1; transition: none; }
+  .barra-navegacao-menu a {
+    color: var(--cor-texto-branco); text-decoration: none; font-family: var(--fonte-destaque);
+    text-transform: uppercase; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
+    padding: 8px 15px; border-radius: 20px; position: relative; transition: var(--transicao-rapida);
+    background: transparent;
+    border: 1px solid transparent;
+    display: inline-block; text-align: center; min-width: auto;
+  }
+  .barra-navegacao-menu a:hover {
+    color: var(--cor-primaria);
+  }
+  .secao-abertura-logo-simbolo { max-width: 290px; }
+  .secao-abertura-logotipo { max-width: 460px; }
+  .titulo-principal { font-size: 2.3rem; letter-spacing: 1px; }
+  .subtitulo-principal { max-width: 500px; margin: 0 auto 35px auto; }
+  .subtitulo-principal p { font-size: 1.1rem; line-height: 1.6; }
+  .grade-artistas { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 35px; }
+  .secao-sobre .conteudo-central { display: flex; align-items: center; gap: 60px; text-align: left; }
+  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 2.4rem; }
+  .secao-sobre-manifesto { flex: 2; }
+  .secao-sobre-imagem-arte { flex: 1; margin-top: 0; }
+  .secao-sobre-imagem-arte img { max-width: 280px; }
+  .cartao-artista {
+    transition: var(--transicao-normal);
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .cartao-artista::before { transition: opacity 0.3s ease; }
+  .cartao-artista:hover::before { opacity: 1; }
+  .cartao-artista:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(199,146,234,0.2), 0 0 30px rgba(199,146,234,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+    border-color: rgba(199,146,234,0.5);
+  }
+  .cartao-artista.visible { opacity: 1; transform: translateY(0); }
+  .secao-sobre-imagem-arte img { transition: var(--transicao-normal); }
+  .secao-sobre-imagem-arte img:hover {
+    opacity: 1; transform: scale(1.05);
+    filter: drop-shadow(0 15px 30px rgba(199,146,234,0.5));
+  }
+  .equipe-depoimentos h3 { font-size: var(--fonte-xl); }
+  .carrossel-btn { display: flex; }
+}
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse), (-webkit-touch-callout: default) {
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
+  .menu-hamburguer { position: absolute; top: 50%; right: 20px; z-index: 10000; }
+  .barra-navegacao { position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; }
+  .cartao-artista { opacity: 1; transform: none; transition: none; }
+  .cartao-artista::before { transition: none; }
+  .cartao-artista:hover::before { opacity: 0; }
+  .cartao-artista:hover { transform: none; box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(199,146,234,0.1), inset 0 1px 0 rgba(255,255,255,0.05); border-color: rgba(199,146,234,0.3); }
+  .secao-sobre-imagem-arte img { max-width: 180px; opacity: 0.8; transform: none; transition: none; animation: none; filter: drop-shadow(0 10px 20px rgba(199,146,234,0.3)); }
+  .secao-sobre-imagem-arte img:hover { opacity: 0.8; transform: none; transition: none; filter: drop-shadow(0 10px 20px rgba(199,146,234,0.3)); }
+  .fundo-particulas { display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+  .particula { display: block; position: absolute; animation-duration: 8s; }
+  .particula:nth-child(odd) { animation-duration: 10s; }
+  .particula:nth-child(3n) { animation-duration: 12s; }
+  .secao-abertura-logo-simbolo { animation: logoFloat 6s ease-in-out infinite; -webkit-animation: logoFloat 6s ease-in-out infinite; }
+  .titulo-principal { animation: none; }
+  .texto-retro-iluminado { animation: none; }
+  .secao-artistas::before { animation: none; }
+  .carrossel-track { will-change: auto; transition: transform 0.3s ease; }
+}
+
+@media (max-width: 768px) {
+  .secao-abertura, .secao-sobre, .secao-representante, .secao-contato { background-attachment: scroll; }
+  .secao-representante { padding: 60px 20px; }
+  .secao-representante h2 { font-size: 1rem; margin-bottom: 40px; }
+  .representantes-container { gap: 5px; }
+  .representante-item { padding: 10px 0; max-width: 280px; margin: 0; }
+  .representante-logo { height: 35px; }
+  .representante-nome { font-size: 0.9rem; letter-spacing: 0.5px; }
+  body::before { opacity: 0.5; }
+  .secao-sobre::before, .secao-representante::before, .secao-contato::before, footer::before { display: none; }
+}
 
 @media (max-width: 767px) {
   .barra-navegacao-logo { height: 62px; }
   .barra-navegacao.scrolled .barra-navegacao-logo { height: 58px; }
-  .titulo-principal { font-size: 1.1rem; letter-spacing: 0.5px; line-height: 1.3; white-space: nowrap; width: 100%; text-align: center; }
-  .subtitulo-principal { max-width: 270px; margin: 0 auto 35px auto; }
-  .subtitulo-principal p { font-size: var(--fonte-xs); line-height: 1.4; white-space: normal; text-align: center; margin: 0; }
-  .secao-abertura-logo-simbolo { max-width: 150px; animation: logoFloat 5s ease-in-out infinite !important; -webkit-animation: logoFloat 5s ease-in-out infinite !important; }
+  .titulo-principal { font-size: 1.1rem; letter-spacing: 0.5px; line-height: 1.3; }
+  .subtitulo-principal { max-width: 270px; }
+  .subtitulo-principal p { font-size: var(--fonte-xs); line-height: 1.4; white-space: normal; }
+  .secao-abertura-logo-simbolo { max-width: 150px; animation: logoFloat 5s ease-in-out infinite !important; }
   .secao-abertura-logotipo { max-width: 250px; }
   .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 1.1rem; letter-spacing: 0px; }
   .secao-sobre p { font-size: 0.85rem; line-height: 1.5; }
@@ -671,116 +711,19 @@ footer p {
   footer p { font-size: 0.65rem; line-height: 1.3; }
   .secao-abertura-conteudo { padding: 140px 5px 60px; }
   .carrossel-indicadores { gap: 12px; margin-top: 30px; }
-  .indicador { 
-    width: 10px; height: 10px; border-width: 2px;
-  }
+  .indicador { width: 10px; height: 10px; border-width: 2px; }
   .indicador:hover { transform: scale(1.1); }
 }
-@media (min-width: 768px) {
-  .menu-hamburguer { display: none; }
-  .barra-navegacao-logo { height: 60px; }
-  .barra-navegacao.scrolled .barra-navegacao-logo { height: 55px; }
-  .barra-navegacao-menu {
-    display: flex !important; position: static; width: auto; height: auto; background: none;
-    backdrop-filter: none; -webkit-backdrop-filter: none; flex-direction: row; justify-content: flex-end;
-    align-items: center; list-style: none; z-index: auto; opacity: 1; visibility: visible; transition: none;
-    gap: 15px; flex-wrap: nowrap;
-  }
-  .barra-navegacao-menu li { margin: 0; transform: none; opacity: 1; transition: none; }
-  .barra-navegacao-menu a {
-    color: var(--cor-texto-branco); text-decoration: none; font-family: var(--fonte-destaque);
-    text-transform: uppercase; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
-    padding: 8px 15px; border-radius: 20px; position: relative; transition: var(--transicao-rapida);
-    background: rgba(255,255,255,0.05); border: 1px solid transparent; backdrop-filter: blur(10px);
-    display: inline-block; text-align: center; min-width: auto;
-  }
-  .barra-navegacao-menu a::before {
-    content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(45deg, rgba(199,146,234,0.2), rgba(139,95,191,0.2));
-    border-radius: 20px; opacity: 0; transition: opacity 0.3s ease; z-index: -1;
-  }
-  .barra-navegacao-menu a:hover::before { opacity: 1; }
-  .barra-navegacao-menu a:hover {
-    color: var(--cor-primaria); border-color: rgba(199,146,234,0.4); transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(199,146,234,0.2); background: rgba(199,146,234,0.1);
-  }
-  .secao-abertura-logo-simbolo { max-width: 200px; }
-  .secao-abertura-logotipo { max-width: 350px; }
-  .titulo-principal { font-size: 1.8rem; letter-spacing: 1px; white-space: nowrap; width: 100%; text-align: center; }
-  .subtitulo-principal { max-width: 500px; margin: 0 auto 35px auto; }
-  .subtitulo-principal p { font-size: 1.1rem; white-space: normal; text-align: center; margin: 0; line-height: 1.6; }
-  .grade-artistas { grid-template-columns: 1fr 1fr; gap: 35px; }
-  .secao-sobre .conteudo-central { display: flex; align-items: center; gap: 60px; text-align: left; }
-  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 2.4rem; }
-  .secao-sobre-manifesto { flex: 2; }
-  .secao-sobre-imagem-arte { flex: 1; margin-top: 0; }
-  .secao-sobre-imagem-arte img { max-width: 280px; }
-  .cartao-artista {
-    transition: var(--transicao-normal); 
-    opacity: 0; 
-    transform: translateY(30px);
-  }
-  .cartao-artista::before {
-    transition: opacity 0.3s ease;
-  }
-  .cartao-artista:hover::before { opacity: 1; }
-  .cartao-artista:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(199,146,234,0.2), 0 0 30px rgba(199,146,234,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
-    border-color: rgba(199,146,234,0.5);
-  }
-  .cartao-artista.visible { opacity: 1; transform: translateY(0); }
-  .secao-sobre-imagem-arte img { transition: var(--transicao-normal); }
-  .secao-sobre-imagem-arte img:hover {
-    opacity: 1; transform: scale(1.05);
-    filter: drop-shadow(0 15px 30px rgba(199,146,234,0.5));
-  }
-  .equipe-depoimentos h3 { 
-    font-size: var(--fonte-xl); 
-  }
-  .carrossel-btn { display: flex; }
-}
-@media (min-width: 1024px) {
-  .titulo-principal { font-size: 2.0rem; letter-spacing: 1.5px; white-space: nowrap; width: 100%; text-align: center; }
-  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 2.6rem; }
-  .secao-abertura-logo-simbolo { max-width: 280px; }
-  .secao-abertura-logotipo { max-width: 420px; }
-  .barra-navegacao-logo { height: 65px; }
-  .barra-navegacao.scrolled .barra-navegacao-logo { height: 60px; }
-  .barra-navegacao-menu { gap: 25px; }
-  .barra-navegacao-menu a { font-size: 0.9rem; padding: 10px 18px; }
-  .grade-artistas { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
-  .cartao-artista-info h3 { font-size: 1.2rem; letter-spacing: 0.2px; white-space: normal; overflow: visible; text-overflow: unset; }
-}
-@media (min-width: 1200px) {
-  .titulo-principal { font-size: 2.4rem; letter-spacing: 2px; white-space: nowrap; width: 100%; text-align: center; }
-  .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 3rem; }
-  .grade-artistas { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 25px; }
-  .secao-abertura-logo-simbolo { max-width: 320px; }
-  .secao-abertura-logotipo { max-width: 480px; }
-  .barra-navegacao-logo { height: 70px; }
-  .barra-navegacao.scrolled .barra-navegacao-logo { height: 65px; }
-  .barra-navegacao-menu { gap: 30px; }
-  .cartao-artista-info h3 { font-size: 1.3rem; letter-spacing: 0.5px; white-space: normal; overflow: visible; text-overflow: unset; }
-}
-@media (min-width: 1400px) {
-  .titulo-principal { font-size: var(--fonte-titulo); letter-spacing: 3px; white-space: nowrap; width: 100%; text-align: center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .secao-abertura-logo-simbolo, .titulo-principal, .secao-artistas::before { animation: none !important; -webkit-animation: none !important; }
-  .cartao-artista { transition: none; }
-  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; -webkit-animation-duration: 0.01ms !important; -webkit-animation-iteration-count: 1 !important; }
-}
-@media (max-width: 768px) {
-  .particula { animation-duration: 8s !important; }
-  .secao-artistas::before { display: none !important; }
-  body::before { opacity: 0.5 !important; }
-  .secao-sobre::before, .secao-representante::before, .secao-contato::before, footer::before { display: none !important; }
-}
+
 @media (max-width: 480px) {
-  .titulo-principal { font-size: var(--fonte-xs); letter-spacing: 0px; margin-bottom: 30px; white-space: nowrap; width: 100%; text-align: center; }
+  .secao-representante { padding: 40px 15px; }
+  .secao-representante h2 { font-size: 1rem; margin-bottom: 30px; }
+  .representante-item { max-width: 250px; padding: 8px 0; }
+  .representante-logo { height: 30px; }
+  .representante-nome { font-size: 0.8rem; }
+  .titulo-principal { font-size: var(--fonte-xs); letter-spacing: 0px; margin-bottom: 30px; }
   .subtitulo-principal p { font-size: 0.65rem; line-height: 1.3; }
-  .secao-abertura-logo-simbolo { max-width: 120px; margin-bottom: 20px; animation: logoFloat 6s ease-in-out infinite !important; -webkit-animation: logoFloat 6s ease-in-out infinite !important; }
+  .secao-abertura-logo-simbolo { max-width: 120px; margin-bottom: 20px; animation: logoFloat 6s ease-in-out infinite !important; }
   .secao-abertura-logotipo { max-width: 200px; margin-bottom: 25px; }
   .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 1rem; }
   .secao-sobre p { font-size: 0.8rem; line-height: 1.4; }
@@ -795,12 +738,13 @@ footer p {
   .secao-abertura-conteudo { padding: 160px 5px 60px; }
   .equipe-depoimentos h3 { font-size: var(--fonte-sm); margin-bottom: var(--espacamento-sm); }
   .carrossel-indicadores { gap: 10px; margin-top: 25px; }
-  .indicador { 
-    width: 8px; height: 8px; border-width: 2px;
-  }
+  .indicador { width: 8px; height: 8px; border-width: 2px; }
+  .desktop-only { display: none; }
+  .mobile-only { display: block; }
 }
+
 @media (max-width: 320px) {
-  .titulo-principal { font-size: 0.65rem; letter-spacing: -0.5px; margin-bottom: 20px; white-space: nowrap; width: 100%; text-align: center; transform: scale(0.9); }
+  .titulo-principal { font-size: 0.65rem; letter-spacing: -0.5px; margin-bottom: 20px; transform: scale(0.9); }
   .subtitulo-principal p { font-size: 0.6rem; line-height: 1.2; }
   .secao-sobre h2, .secao-artistas h2, .secao-contato h2 { font-size: 0.9rem; letter-spacing: 0px; }
   .secao-sobre p { font-size: 0.7rem; line-height: 1.3; }
@@ -815,45 +759,11 @@ footer p {
   .equipe-depoimentos h3 { font-size: var(--fonte-xs); margin-bottom: var(--espacamento-xs); }
 }
 
-.desktop-only { display: block; }
-.mobile-only { display: none; }
-
-.secao-abertura-imagem-mobile {
-  width: 100%; height: 100vh;
-  background-image: url('../assets/imagem-1.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: brightness(0.5);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-@media (max-width: 768px), (hover: none) and (pointer: coarse), (-webkit-touch-callout: default) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
-  .menu-hamburguer { position: absolute; top: 50% !important; right: 20px !important; transform: translateY(-50%) !important; z-index: 10000 !important; }
-  .barra-navegacao { position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 9999 !important; }
-  .cartao-artista { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .cartao-artista::before { transition: none !important; }
-  .cartao-artista:hover::before { opacity: 0 !important; }
-  .cartao-artista:hover { transform: none !important; box-shadow: 0 8px 25px rgba(0,0,0,0.4), 0 0 0 1px rgba(199,146,234,0.1), inset 0 1px 0 rgba(255,255,255,0.05) !important; border-color: rgba(199,146,234,0.3) !important; }
-  .secao-sobre-imagem-arte img { max-width: 180px !important; opacity: 0.8 !important; transform: none !important; transition: none !important; animation: none !important; filter: drop-shadow(0 10px 20px rgba(199,146,234,0.3)) !important; }
-  .secao-sobre-imagem-arte img:hover { opacity: 0.8 !important; transform: none !important; transition: none !important; filter: drop-shadow(0 10px 20px rgba(199,146,234,0.3)) !important; }
-  .fundo-particulas { display: block !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; pointer-events: none !important; z-index: 1 !important; overflow: hidden !important; }
-  .particula { display: block !important; position: absolute !important; animation: particleFloat 8s infinite linear !important; }
-  .particula:nth-child(odd) { animation-duration: 10s !important; }
-  .particula:nth-child(3n) { animation-duration: 12s !important; }
-  .secao-abertura-logo-simbolo { animation: logoFloat 6s ease-in-out infinite !important; -webkit-animation: logoFloat 6s ease-in-out infinite !important; will-change: transform; }
-  .titulo-principal { animation: none !important; }
-  .texto-retro-iluminado { animation: none !important; }
-  .secao-artistas::before { animation: none !important; }
-  .carrossel-track { will-change: auto !important; transition: transform 0.3s ease !important; }
-  body { -webkit-overflow-scrolling: touch; }
-  * { will-change: auto !important; }
-}
-@media (max-width: 480px) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+  }
 }
