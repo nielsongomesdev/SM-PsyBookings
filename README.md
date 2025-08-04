@@ -1,45 +1,73 @@
 ![Animação](https://github.com/user-attachments/assets/39234b4e-fffe-48c4-9c19-37c86029fbb3)
 
 # 💿 S&M PsyBookings
-[🚀 Ver Demo Ao Vivo](https://sm-psybookings.com)
+[ Ver Demo Ao Vivo](https://sm-psybookings.com)
  Landing page para plataforma de bookings de artistas da música eletrônica.
 
-## Sobre
+## Características
 
-Agência especializada em **psytrance** com foco em **retrofuturismo, identidade e imersão sonora**.
-
-## 🚀 Características
-
-- **Mobile-First** - Design responsivo
+- **Responsivo Otimizado** - Design adaptável para todos dispositivos
 - **Interface Moderna** - Visual futurista com efeitos neon
 - **Experiência Imersiva** - Vídeo de fundo e partículas animadas
 - **Carrossel Interativo** - Navegação touch/mouse
-- **Performance Otimizada** - Código limpo
+- **Performance Otimizada** - Código limpo e CSS eficiente
+- **UX Mobile Perfeita** - Interface touch-friendly otimizada
 
 ##  Seções
 
-- **Home** - Vídeo de abertura e branding
-- **A Agência** - Manifesto e equipe
-- **Artistas** - Macrocosmic, Davinci, Soul Drive, Hosh
-- **Representantes** - Brutish Heavy Music e Psygram
-- **Contato** - Linktree e redes sociais
+- **Home** 
+- **A Agência**
+- **Artistas** 
+- **Representantes**
+- **Contato**
 
-## 🛠️ Tecnologias
+##  Tecnologias
 
+### **Frontend Core**
 - **HTML5** - Estrutura semântica
-- **CSS3** - Flexbox, Grid, animações, backdrop filters
+- **CSS3** - Flexbox, Grid, variáveis CSS, animações, backdrop filters
 - **JavaScript ES6+** - Async/Await, Promises, Classes modernas
-- **Funções Assíncronas** - Autoplay inteligente, scroll otimizado, carregamento de partículas
-- **APIs Modernas** - IntersectionObserver, Performance API, SessionStorage
-- **Font Awesome** - Ícones
+
+### **Design Responsivo**
+
+- **Breakpoints Progressivos** - 320px → 480px → 768px → 1024px → 1200px → 1400px
+- **Sistema de Variáveis de CSS** - 56 variáveis para consistência total
+- **Touch-Friendly** - Interface otimizada para mobile
 
 
-### 🔧 **Benefícios das Funções Assíncronas**
+
+
+### **Benefícios da Arquitetura**
 - ✅ **Performance**: Não bloqueia a interface do usuário
-- ✅ **Compatibilidade**: Fallbacks elegantes para todos navegadores  
-- ✅ **UX Otimizada**: Transições suaves e responsivas
+- ✅ **Responsividade**: Adaptação perfeita para todos dispositivos  
+- ✅ **UX Otimizada**: Transições suaves e interface touch-friendly
 - ✅ **Código Moderno**: Padrões ES6+ com async/await
+- ✅ **CSS Eficiente**: Sistema de variáveis com 100% de utilização
+- ✅ **Mobile Experience**: Interface otimizada para dispositivos móveis
 
+##  Abordagem Responsiva
+
+
+
+### **Sistema de Variáveis**
+- **56 Variáveis CSS**: 100% de utilização em todo o projeto
+- **Escala de Tipografia**: `--fonte-xs` → `--fonte-sm` → `--fonte-md` → `--fonte-lg` → `--fonte-xl`
+- **Sistema de Espaçamento**: `--espacamento-xs` → `--espacamento-sm` → `--espacamento-md` → `--espacamento-lg`
+- **🎨 Paleta**:
+- **Primária**: `#C792EA` (Roxo neon)
+- **Secundária**: `#8B5FBF` (Roxo escuro)
+- **Fundo**: `#121212` (Preto suave)
+
+
+### **Mobile UX**
+- ✅ **Hamburger Menu**: “hambúrguer” (ícone de três linhas para navegação em dispositivos móveis)
+- ✅ **Touch Carousel**:  Carrossel de imagens ou conteúdo que pode ser deslizado com o dedo
+
+- ✅ **Tipografia Responsiva**:  Tamanho e estilo de texto que se adaptam a diferentes tamanhos de tela.
+
+- ✅ **Otimização de Imagens**: Imagens otimizadas para carregar mais rápido e consumir menos dados.
+
+- ✅ **Desempenho no Mobile**:  Ajustes para garantir carregamento rápido e boa performance em dispositivos móveis.
 ## 📁 Estrutura
 
 ```
@@ -57,30 +85,18 @@ SM-PsyBookings/
     ├── imagens e logos dos artistas
 ```
 
-## 🚀 Como Executar
+## Como Executar
 
 ```bash
 git clone https://github.com/nielsongomesdev/SM-PsyBookings.git
 cd SM-PsyBookings
 ```
 
-## 🎨 Paleta
-
-- **Primária**: `#C792EA` (Roxo neon)
-- **Secundária**: `#8B5FBF` (Roxo escuro)
-- **Fundo**: `#121212` (Preto suave)
-
-
 ### Contato
 - [Linktree](https://linktr.ee/SMPSYBOOKINGS)
 - [Instagram](https://www.instagram.com/smpsybookings/)
 - Email: smpsybookings@gmail.com
 
-## 👥 Equipe
-
-- **Samantha** - CEO
-- **Anderson** - Co-Founder & Management
-- **Monique** - Gestão Operacional
 
 ## 💻 Desenvolvimento
 
