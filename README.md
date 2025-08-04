@@ -101,7 +101,7 @@ cd SM-PsyBookings
 
 ## 💻 Desenvolvimento
 
-**Website desenvolvido por:** [Nielson Gomes](https://github.com/nielsongomesdev)
+**desenvolvido por:** [Nielson Gomes](https://github.com/nielsongomesdev)
 
 ## 📄 Licença
 

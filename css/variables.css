@@ -1,19 +1,13 @@
-
-/* ===== DESIGN SYSTEM - SM PSYBOOKINGS ===== */
-
 :root {
-  /* === CORES PRINCIPAIS === */
   --cor-primaria: #c792ea;
   --cor-primaria-hover: #d4a7f5;
   --cor-secundaria: #8b5fbf;
   --cor-terciaria: #6a4c93;
   
-  /* === CORES DE TEXTO === */
   --cor-texto: #e0e0e0;
   --cor-texto-branco: #ffffff;
   --cor-texto-footer: #888888;
-  
-  /* === CORES BASE === */
+
   --cor-preto-1: #0a0a0a;
   --cor-preto-2: #121212;
   --cor-preto-3: #1a1a1a;
@@ -21,23 +15,19 @@
   --cor-cinza-2: #252525;
   --cor-cinza-3: #2d2d2d;
   
-  /* === FUNDOS === */
   --fundo-body: linear-gradient(135deg, var(--cor-preto-1), var(--cor-preto-3), var(--cor-preto-2));
   --fundo-navbar: linear-gradient(135deg, rgba(18, 18, 18, 0.85), rgba(26, 26, 26, 0.8), rgba(30, 20, 35, 0.85));
   --fundo-navbar-scrolled: linear-gradient(135deg, rgba(18, 18, 18, 0.95), rgba(26, 26, 26, 0.92), rgba(30, 20, 35, 0.95));
   
-  /* === TIPOGRAFIA === */
   --fonte-principal: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --fonte-display: 'Orbitron', 'Courier New', monospace;
   --fonte-destaque: 'Chakra Petch', 'Roboto', sans-serif;
-  
-  /* === TRANSIÇÕES === */
+
   --easing-suave: cubic-bezier(0.4, 0, 0.2, 1);
   --transicao-rapida: all 0.3s var(--easing-suave);
   --transicao-normal: all 0.4s var(--easing-suave);
   --transicao-lenta: all 0.6s var(--easing-suave);
   
-  /* === GRADIENTES === */
   --gradiente-principal: linear-gradient(45deg, var(--cor-primaria), var(--cor-secundaria), var(--cor-terciaria));
   --gradiente-hover: linear-gradient(135deg, rgba(199, 146, 234, 0.1), rgba(139, 95, 191, 0.15));
   --gradiente-hover-ativo: linear-gradient(135deg, rgba(199, 146, 234, 0.2), rgba(139, 95, 191, 0.25));
