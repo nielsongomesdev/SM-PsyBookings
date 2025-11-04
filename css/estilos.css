@@ -767,3 +767,28 @@ footer p {
     animation-delay: 0s !important;
   }
 }
+
+
+@media (min-width: 1024px) {
+  .secao-artistas .conteudo-central .grade-artistas {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    align-items: stretch;
+    grid-auto-rows: 1fr;
+  }
+
+  .secao-artistas .conteudo-central .grade-artistas > .cartao-artista {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .secao-artistas .conteudo-central .grade-artistas > .cartao-artista .cartao-artista-links {
+    margin-top: auto;
+  }
+
+  .secao-artistas .conteudo-central .grade-artistas > .cartao-artista .cartao-artista-imagem img {
+    height: 200px;
+    object-fit: cover;
+  }
+}
