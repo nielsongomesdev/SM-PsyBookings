@@ -11,13 +11,41 @@
     <link rel="canonical" href="https://sm-psybookings.com/" />
     <title>S&M PsyBookings Agência</title>
 
-    <link rel="shortcut icon" href="assets/imagem-4.png" type="image/png" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content="https://sm-psybookings.com/" />
+    <meta property="og:site_name" content="S&M PsyBookings" />
+    <meta property="og:title" content="S&M PsyBookings — Agência de bookings de Psytrance" />
+    <meta
+      property="og:description"
+      content="Agência de bookings para artistas visionários do psytrance. Curadoria, marketing e visibilidade."
+    />
+    <meta property="og:image" content="https://sm-psybookings.com/assets/img/imagem-4.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="S&M PsyBookings — Agência de bookings de Psytrance" />
+    <meta
+      name="twitter:description"
+      content="Agência de bookings para artistas visionários do psytrance. Curadoria, marketing e visibilidade."
+    />
+    <meta name="twitter:image" content="https://sm-psybookings.com/assets/img/imagem-4.png" />
+
+    <link rel="shortcut icon" href="assets/img/imagem-4.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Poppins:wght@300;400;600&family=Orbitron:wght@400;700;900&display=swap"
+    />
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/variables.css" />
     <link rel="stylesheet" href="css/estilos.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
   </head>
 
@@ -26,22 +54,28 @@
     <nav class="barra-navegacao">
       <div class="barra-navegacao-container">
         <img
-          src="assets/logo.png"
+          src="assets/img/logo.png"
           alt="Logotipo da S&M PsyBookings"
           class="barra-navegacao-logo"
         />
-        <ul class="barra-navegacao-menu">
+        <ul id="menu-principal" class="barra-navegacao-menu">
           <li><a href="#abertura">Home</a></li>
           <li><a href="#artistas">Artistas</a></li>
           <li><a href="#sobre">A Agência</a></li>
-          <li><a href="#contato">Contato</a></li>
+          <li><a href="#contato" class="menu-cta">Booking</a></li>
         </ul>
 
-        <div class="menu-hamburguer">
+        <button
+          type="button"
+          class="menu-hamburguer"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="menu-principal"
+        >
           <span></span>
           <span></span>
           <span></span>
-        </div>
+        </button>
       </div>
     </nav>
 
@@ -56,22 +90,23 @@
         webkit-playsinline
         x-webkit-airplay="deny"
         disablepictureinpicture
-        controlslist="nodownload nofullscreen noremoteplaybook"
+        controlslist="nodownload nofullscreen noremoteplayback"
         data-object-fit="cover"
       >
-        <source src="assets/apresentacao-loop.mp4" type="video/mp4" />
+        <source src="assets/video/apresentacao-loop.mp4" type="video/mp4" />
       </video>
       <div class="secao-abertura-conteudo">
         <img
-          src="assets/imagem-4.png"
+          src="assets/img/imagem-4.png"
           alt="Símbolo da S&M PsyBookings"
           class="secao-abertura-logo-simbolo"
         />
         <img
-          src="assets/logo.png"
+          src="assets/img/logo.png"
           alt="Logotipo da S&M PsyBookings"
           class="secao-abertura-logotipo"
         />
+        <p class="abertura-overline">Agência de bookings · Psytrance</p>
         <h1 class="titulo-principal">
           Retrofuturismo, identidade e imersão sonora.
         </h1>
@@ -87,7 +122,7 @@
     <main>
       <section id="sobre" class="secao secao-sobre">
         <div class="conteudo-central">
-          <div class="secao-sobre-manifesto">
+          <div class="secao-sobre-manifesto" data-reveal>
             <h2>Não somos apenas uma agência.</h2>
             <p>
               Somos um
@@ -112,12 +147,12 @@
               </p>
             </div>
           </div>
-          <div class="secao-sobre-imagem-arte">
-            <img src="assets/imagem-3.png" alt="Arte da S&M PsyBookings" />
+          <div class="secao-sobre-imagem-arte" data-reveal>
+            <img src="assets/img/imagem-3.png" loading="lazy" decoding="async" alt="Arte da S&M PsyBookings" />
           </div>
         </div>
         <div class="conteudo-central">
-          <div class="equipe-depoimentos">
+          <div class="equipe-depoimentos" data-reveal>
             <h3>Nossa Equipe</h3>
             <div class="carrossel-depoimentos">
               <div class="carrossel-container">
@@ -253,12 +288,14 @@
 
       <section id="artistas" class="secao secao-artistas">
         <div class="conteudo-central">
-          <h2>Nomes que moldam o futuro.</h2>
+          <h2 data-reveal>Nomes que moldam o futuro.</h2>
           <div class="grade-artistas">
             <div class="cartao-artista">
               <div class="cartao-artista-imagem">
                 <img
-                  src="assets/macrocosmic.jpeg"
+                  src="assets/img/macrocosmic.jpeg"
+                  loading="lazy"
+                  decoding="async"
                   alt="Foto do artista Macrocosmic"
                 />
               </div>
@@ -294,11 +331,16 @@
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
+                <a
+                  href="mailto:smpsybookings@gmail.com?subject=Booking%3A%20Macrocosmic"
+                  class="link-booking"
+                  ><i class="fas fa-calendar-check"></i> Solicitar booking</a
+                >
               </div>
             </div>
             <div class="cartao-artista">
               <div class="cartao-artista-imagem">
-                <img src="assets/davinci.JPG" alt="Foto do artista Davinci" />
+                <img src="assets/img/davinci.jpg" loading="lazy" decoding="async" alt="Foto do artista Davinci" />
               </div>
               <div class="cartao-artista-info">
                 <h3>Davinci</h3>
@@ -325,12 +367,19 @@
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
+                <a
+                  href="mailto:smpsybookings@gmail.com?subject=Booking%3A%20Davinci"
+                  class="link-booking"
+                  ><i class="fas fa-calendar-check"></i> Solicitar booking</a
+                >
               </div>
             </div>
             <div class="cartao-artista">
               <div class="cartao-artista-imagem">
                 <img
-                  src="assets/soul-drive.jpeg"
+                  src="assets/img/soul-drive.jpeg"
+                  loading="lazy"
+                  decoding="async"
                   alt="Foto do artista Soul Drive"
                 />
               </div>
@@ -366,11 +415,16 @@
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
+                <a
+                  href="mailto:smpsybookings@gmail.com?subject=Booking%3A%20Soul%20Drive"
+                  class="link-booking"
+                  ><i class="fas fa-calendar-check"></i> Solicitar booking</a
+                >
               </div>
             </div>
             <div class="cartao-artista">
               <div class="cartao-artista-imagem">
-                <img src="assets/hosh.jpeg" alt="Foto do artista Hosh" />
+                <img src="assets/img/hosh.jpeg" loading="lazy" decoding="async" alt="Foto do artista Hosh" />
               </div>
               <div class="cartao-artista-info">
                 <h3>Hosh</h3>
@@ -397,12 +451,19 @@
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
+                <a
+                  href="mailto:smpsybookings@gmail.com?subject=Booking%3A%20Hosh"
+                  class="link-booking"
+                  ><i class="fas fa-calendar-check"></i> Solicitar booking</a
+                >
               </div>
             </div>
             <div class="cartao-artista">
               <div class="cartao-artista-imagem">
                 <img
-                  src="assets/Indigo.JPG"
+                  src="assets/img/indigo.jpg"
+                  loading="lazy"
+                  decoding="async"
                   alt="Indigo — Paulo Neto (foto do artista)"
                 />
               </div>
@@ -432,6 +493,11 @@
                     ><i class="fab fa-soundcloud"></i> SoundCloud</a
                   >
                 </div>
+                <a
+                  href="mailto:smpsybookings@gmail.com?subject=Booking%3A%20Indigo"
+                  class="link-booking"
+                  ><i class="fas fa-calendar-check"></i> Solicitar booking</a
+                >
               </div>
             </div>
           </div>
@@ -439,12 +505,14 @@
       </section>
 
       <section id="representante" class="secao secao-representante">
-        <div class="conteudo-central">
+        <div class="conteudo-central" data-reveal>
           <h2>Representante Oficial</h2>
           <div class="representantes-container">
             <div class="representante-item">
               <img
-                src="assets/LOGO BHM.png"
+                src="assets/img/logo-bhm.png"
+                loading="lazy"
+                decoding="async"
                 alt="Logo Brutish Heavy Music"
                 class="representante-logo"
               />
@@ -452,13 +520,16 @@
                 href="https://www.youtube.com/@brutishheavymusic"
                 title="Canal do Brutish Heavy Music no YouTube"
                 target="_blank"
+                rel="noopener noreferrer"
                 class="representante-nome"
                 >Brutish Heavy Music</a
               >
             </div>
             <div class="representante-item">
               <img
-                src="assets/LOGO PSYGRAM.PNG"
+                src="assets/img/logo-psygram.png"
+                loading="lazy"
+                decoding="async"
                 alt="Logo Psygram"
                 class="representante-logo"
               />
@@ -466,6 +537,7 @@
                 href="https://www.instagram.com/psygram_official/"
                 title="Perfil do Psygram no Instagram"
                 target="_blank"
+                rel="noopener noreferrer"
                 class="representante-nome"
                 >Psygram</a
               >
@@ -475,15 +547,23 @@
       </section>
 
       <section id="contato" class="secao secao-contato">
-        <div class="conteudo-central">
+        <div class="conteudo-central" data-reveal>
           <h2>Vamos criar conexões.</h2>
           <p>Entre em contato para propostas, bookings e colaborações.</p>
-          <a
-            href="https://linktr.ee/SMPSYBOOKINGS"
-            target="_blank"
-            class="botao-chamada"
-            >Fale Conosco</a
-          >
+          <div class="contato-acoes">
+            <a
+              href="mailto:smpsybookings@gmail.com?subject=Solicita%C3%A7%C3%A3o%20de%20booking&body=Ol%C3%A1%2C%20S%26M%20PsyBookings!%0A%0ANome%3A%20%0AEvento%3A%20%0AData%20prevista%3A%20%0ACidade%2FLocal%3A%20%0AArtista%20de%20interesse%3A%20%0AMensagem%3A%20"
+              class="botao-chamada"
+              >Solicitar booking</a
+            >
+            <a
+              href="https://linktr.ee/SMPSYBOOKINGS"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="botao-secundario"
+              >Fale Conosco</a
+            >
+          </div>
         </div>
       </section>
     </main>
@@ -492,14 +572,14 @@
       <div class="rodape-links-sociais">
         <a
           href="mailto:smpsybookings@gmail.com?subject=Contato%20via%20Site%20S%26M%20PsyBookings"
-          onclick="return abrirEmail()"
           title="Email da S&M PsyBookings - smpsybookings@gmail.com"
+          aria-label="Enviar e-mail para a S&M PsyBookings"
         >
-          <i class="fas fa-envelope"></i>
+          <i class="fas fa-envelope" aria-hidden="true"></i>
         </a>
       </div>
-      <p>© 2025 S&M PsyBookings. Todos os direitos reservados.</p>
+      <p>© <span id="ano-atual">2026</span> S&M PsyBookings. Todos os direitos reservados.</p>
     </footer>
-    <script src="index.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>

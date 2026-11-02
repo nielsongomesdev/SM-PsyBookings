@@ -1,3 +1,5 @@
+document.documentElement.classList.add('js');
+
 const DeviceDetector = {
     isMobile: /Mobi|Android/i.test(navigator.userAgent),
     isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
@@ -133,7 +135,7 @@ class VideoAutoplayManager {
         });
         ['playsinline', 'webkit-playsinline', 'muted', 'autoplay', 'loop', 'preload', 'x-webkit-airplay', 'disablepictureinpicture']
             .forEach(attr => this.video.setAttribute(attr, attr === 'preload' ? 'auto' : ''));
-        this.video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplaybook');
+        this.video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback');
     }
     async forcePlay() {
         try {
@@ -150,15 +152,10 @@ class VideoAutoplayManager {
             return false;
         }
     }
-    async handleFirstInteraction(e) {
+    async handleFirstInteraction() {
         if (this.hasUserInteracted) return;
         this.hasUserInteracted = true;
-        e.preventDefault();
-        e.stopPropagation();
-        if (await this.forcePlay()) {
-            document.removeEventListener('touchstart', this.handleFirstInteraction, true);
-            document.removeEventListener('click', this.handleFirstInteraction, true);
-        }
+        await this.forcePlay();
     }
     captureAnyInteraction() {
         if (!this.autoPlayAttempted) {
@@ -167,8 +164,8 @@ class VideoAutoplayManager {
         }
     }
     setupEventListeners() {
-        document.addEventListener('touchstart', e => this.handleFirstInteraction(e), { capture: true, passive: false });
-        document.addEventListener('click', e => this.handleFirstInteraction(e), { capture: true, passive: false });
+        document.addEventListener('touchstart', () => this.handleFirstInteraction(), { capture: true, passive: true });
+        document.addEventListener('click', () => this.handleFirstInteraction(), { capture: true, passive: true });
         ['touchstart', 'touchend', 'touchmove', 'click', 'scroll', 'keydown', 'mousedown', 'wheel', 'focus']
             .forEach(ev => document.addEventListener(ev, () => this.captureAnyInteraction(), { once: true, passive: true }));
         ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough']
@@ -249,22 +246,46 @@ class MobileMenuManager {
         const menuHamburguer = document.querySelector('.menu-hamburguer');
         const menuLinks = document.querySelector('.barra-navegacao-menu');
         if (!menuHamburguer || !menuLinks) return;
+        const setState = open => {
+            menuHamburguer.classList.toggle('active', open);
+            menuLinks.classList.toggle('active', open);
+            menuHamburguer.setAttribute('aria-expanded', String(open));
+            menuHamburguer.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+        };
         menuHamburguer.addEventListener('click', () => {
-            menuHamburguer.classList.toggle('active');
-            menuLinks.classList.toggle('active');
+            setState(!menuHamburguer.classList.contains('active'));
         });
         document.querySelectorAll('.barra-navegacao-menu a').forEach(link =>
-            link.addEventListener('click', () => {
-                menuHamburguer.classList.remove('active');
-                menuLinks.classList.remove('active');
-            })
+            link.addEventListener('click', () => setState(false))
         );
         document.addEventListener('click', e => {
             if (!menuHamburguer.contains(e.target) && !menuLinks.contains(e.target)) {
-                menuHamburguer.classList.remove('active');
-                menuLinks.classList.remove('active');
+                setState(false);
             }
         });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') setState(false);
+        });
+    }
+}
+
+class RevealManager {
+    static initialize() {
+        const elements = document.querySelectorAll('[data-reveal]');
+        if (!elements.length) return;
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach(el => el.classList.add('visible'));
+            return;
+        }
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        elements.forEach(el => observer.observe(el));
     }
 }
 
@@ -462,15 +483,100 @@ class CarrosselDepoimentos {
 }
 
 
-function abrirEmail() {
-    if (window.innerWidth > 768) {
-        window.open(
-            'https://mail.google.com/mail/?view=cm&fs=1&to=smpsybookings@gmail.com&su=Contato%20via%20Site%20S%26M%20PsyBookings',
-            '_blank'
-        );
-        return false;
+class ScrollEffectsManager {
+    static initialize() {
+        this.setupProgressBar();
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) this.setupHeroParallax();
     }
-    return true;
+    static setupProgressBar() {
+        const barra = document.createElement('div');
+        barra.className = 'barra-progresso';
+        document.body.appendChild(barra);
+        let agendado = false;
+        const atualizar = () => {
+            agendado = false;
+            const maximo = document.documentElement.scrollHeight - window.innerHeight;
+            barra.style.transform = `scaleX(${maximo > 0 ? scrollY / maximo : 0})`;
+        };
+        window.addEventListener('scroll', () => {
+            if (!agendado) {
+                agendado = true;
+                requestAnimationFrame(atualizar);
+            }
+        }, { passive: true });
+        atualizar();
+    }
+    static setupHeroParallax() {
+        const conteudo = document.querySelector('.secao-abertura-conteudo');
+        if (!conteudo) return;
+        let agendado = false;
+        const atualizar = () => {
+            agendado = false;
+            const limite = window.innerHeight;
+            if (scrollY >= limite) {
+                conteudo.style.opacity = '0';
+                return;
+            }
+            conteudo.style.transform = `translateY(${Math.round(scrollY * 0.3)}px)`;
+            conteudo.style.opacity = String(Math.max(0, 1 - (scrollY / limite) * 1.3).toFixed(3));
+        };
+        window.addEventListener('scroll', () => {
+            if (!agendado) {
+                agendado = true;
+                requestAnimationFrame(atualizar);
+            }
+        }, { passive: true });
+    }
+}
+
+class TiltManager {
+    static initialize() {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        document.querySelectorAll('.cartao-artista').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'transform 0.12s ease-out';
+            });
+            card.addEventListener('mousemove', e => {
+                const area = card.getBoundingClientRect();
+                const x = (e.clientX - area.left) / area.width - 0.5;
+                const y = (e.clientY - area.top) / area.height - 0.5;
+                card.style.transform =
+                    `perspective(900px) translateY(-8px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 5).toFixed(2)}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transition = '';
+                card.style.transform = '';
+            });
+        });
+    }
+}
+
+class FooterManager {
+    static initialize() {
+        const ano = document.getElementById('ano-atual');
+        if (ano) ano.textContent = new Date().getFullYear();
+    }
+}
+
+class EmailLinksManager {
+    static initialize() {
+        document.querySelectorAll('a[href^="mailto:"]').forEach(link =>
+            link.addEventListener('click', e => {
+                if (window.innerWidth <= 768) return;
+                e.preventDefault();
+                const url = new URL(link.href);
+                const params = new URLSearchParams(url.search);
+                const gmail = new URL('https://mail.google.com/mail/');
+                gmail.searchParams.set('view', 'cm');
+                gmail.searchParams.set('fs', '1');
+                gmail.searchParams.set('to', url.pathname);
+                if (params.get('subject')) gmail.searchParams.set('su', params.get('subject'));
+                if (params.get('body')) gmail.searchParams.set('body', params.get('body'));
+                window.open(gmail.toString(), '_blank', 'noopener');
+            })
+        );
+    }
 }
 
 class AppInitializer {
@@ -487,6 +593,11 @@ class AppInitializer {
                     ParticleSystem.startParticleSystem(),
                     Promise.resolve(MobileMenuManager.initialize()),
                     Promise.resolve(ArtistCardsAnimationManager.initialize()),
+                    Promise.resolve(RevealManager.initialize()),
+                    Promise.resolve(ScrollEffectsManager.initialize()),
+                    Promise.resolve(TiltManager.initialize()),
+                    Promise.resolve(EmailLinksManager.initialize()),
+                    Promise.resolve(FooterManager.initialize()),
                     Promise.resolve(new CarrosselDepoimentos())
                 ]);
                 await new Promise(r => requestAnimationFrame(() => {
